@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: feature-toggle-read
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+  datasource:
+    url: jdbc:postgresql://localhost:5434/toggleread
+    username: admin
+    password: admin
+    driver-class-name: org.postgresql.Driver
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  kafka:
+    bootstrap-servers: localhost:9092
+
+server:
+  port: 8083
