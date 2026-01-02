@@ -14,8 +14,8 @@
 	<name>read</name>
 	<properties>
 		<java.version>21</java.version>
-        <contracts.version>1.0.1</contracts.version>
-        <model.version>1.0.1</model.version>
+        <contracts.version>1.0.0-6-SNAPSHOT</contracts.version>
+        <model.version>1.0.0-10-SNAPSHOT</model.version>
 	</properties>
 	<dependencies>
         <dependency>
@@ -38,6 +38,14 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
