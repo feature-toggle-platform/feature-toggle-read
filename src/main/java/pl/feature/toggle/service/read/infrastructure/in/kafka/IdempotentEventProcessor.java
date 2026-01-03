@@ -15,11 +15,12 @@ class IdempotentEventProcessor implements EventProcessor {
     private final ProcessedEventRepository processedEvents;
 
     @Override
-    public <T extends IntegrationEvent> void process(T event, Consumer<T> action) {
+    public <T extends IntegrationEvent> void process(T event, Consumer<T> action, Runnable afterSuccessAction) {
         logReceiveEvent(event);
 
         if (processedEvents.alreadyProcessed(event.eventId())) {
             logEventAlreadyProcessed(event);
+            afterSuccessAction.run();
             return;
         }
 
@@ -27,6 +28,7 @@ class IdempotentEventProcessor implements EventProcessor {
 
         processedEvents.markProcessed(event.eventId());
         logProcessedEvent(event);
+        afterSuccessAction.run();
     }
 
     private void logReceiveEvent(IntegrationEvent event) {

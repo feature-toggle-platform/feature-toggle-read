@@ -1,6 +1,7 @@
 package pl.feature.toggle.service.read.infrastructure.in.kafka;
 
 import pl.feature.toggle.service.contracts.shared.EventProcessor;
+import pl.feature.toggle.service.contracts.shared.IntegrationEvent;
 import pl.feature.toggle.service.read.application.port.in.FeatureToggleProjectionUseCase;
 import pl.feature.toggle.service.read.application.port.out.ProcessedEventRepository;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -26,34 +27,36 @@ import java.util.Map;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG;
 import static org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG;
+import static org.springframework.kafka.listener.ContainerProperties.AckMode.MANUAL_IMMEDIATE;
 
 @Configuration("kafkaConfig")
 class Config {
-
-    private static final String GROUP_ID = "feature-toggle-read-consumer-group";
 
     @Autowired
     private Environment environment;
 
     @Bean
-    ConsumerFactory<String, Object> consumerFactory() {
+    ConsumerFactory<String, IntegrationEvent> consumerFactory() {
         Map<String, Object> cfg = new HashMap<>();
         cfg.put(BOOTSTRAP_SERVERS_CONFIG, environment.getProperty("spring.kafka.bootstrap-servers"));
         cfg.put(KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         cfg.put(VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
         cfg.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JacksonJsonDeserializer.class);
         cfg.put(JacksonJsonDeserializer.TRUSTED_PACKAGES, "*");
-        cfg.put(ConsumerConfig.GROUP_ID_CONFIG, GROUP_ID);
+        cfg.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
+        cfg.put(ConsumerConfig.GROUP_ID_CONFIG, environment.getProperty("spring.kafka.consumer.group-id"));
         return new DefaultKafkaConsumerFactory<>(cfg);
     }
 
     @Bean
-    ConcurrentKafkaListenerContainerFactory<String, Object> kafkaListenerContainerFactory(
-            ConsumerFactory<String, Object> consumerFactory,
-            KafkaTemplate<String, Object> kafkaTemplate
+    ConcurrentKafkaListenerContainerFactory<String, IntegrationEvent> kafkaListenerContainerFactory(
+            ConsumerFactory<String, IntegrationEvent> consumerFactory,
+            KafkaTemplate<String, IntegrationEvent> kafkaTemplate
     ) {
-        var factory = new ConcurrentKafkaListenerContainerFactory<String, Object>();
+        var factory = new ConcurrentKafkaListenerContainerFactory<String, IntegrationEvent>();
         factory.setConsumerFactory(consumerFactory);
+        factory.getContainerProperties()
+                .setAckMode(MANUAL_IMMEDIATE);
 
         var recoverer = new DeadLetterPublishingRecoverer(kafkaTemplate,
                 (record, ex) -> new TopicPartition(record.topic() + ".DLT", record.partition()));

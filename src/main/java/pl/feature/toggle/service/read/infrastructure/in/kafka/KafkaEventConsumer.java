@@ -1,5 +1,6 @@
 package pl.feature.toggle.service.read.infrastructure.in.kafka;
 
+import org.springframework.kafka.support.Acknowledgment;
 import pl.feature.toggle.service.contracts.event.featuretoggle.FeatureToggleCreated;
 import pl.feature.toggle.service.contracts.event.featuretoggle.FeatureToggleDeleted;
 import pl.feature.toggle.service.contracts.event.featuretoggle.FeatureToggleUpdated;
@@ -12,25 +13,34 @@ import org.springframework.kafka.annotation.KafkaListener;
 
 @Slf4j
 @AllArgsConstructor
-@KafkaListener(topics = "feature-toggle-events")
+@KafkaListener(topics = "${topics.feature-toggle-events}")
 class KafkaEventConsumer {
 
     private final FeatureToggleProjectionUseCase projectionUseCase;
     private final EventProcessor eventProcessor;
 
     @KafkaHandler
-    void handle(FeatureToggleCreated event) {
-        eventProcessor.process(event, projectionUseCase::handle);
+    void handle(FeatureToggleCreated event, Acknowledgment acknowledgment) {
+        eventProcessor.process(
+                event,
+                projectionUseCase::handle,
+                acknowledgment::acknowledge);
     }
 
     @KafkaHandler
-    void handle(FeatureToggleUpdated event) {
-        eventProcessor.process(event, projectionUseCase::handle);
+    void handle(FeatureToggleUpdated event, Acknowledgment acknowledgment) {
+        eventProcessor.process(
+                event,
+                projectionUseCase::handle,
+                acknowledgment::acknowledge);
     }
 
     @KafkaHandler
-    void handle(FeatureToggleDeleted event) {
-        eventProcessor.process(event, projectionUseCase::handle);
+    void handle(FeatureToggleDeleted event, Acknowledgment acknowledgment) {
+        eventProcessor.process(
+                event,
+                projectionUseCase::handle,
+                acknowledgment::acknowledge);
     }
 
 }
