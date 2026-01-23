@@ -1,15 +1,15 @@
 package pl.feature.toggle.service.read.application.handler;
 
-import pl.feature.toggle.service.model.CreatedAt;
-import pl.feature.toggle.service.model.UpdatedAt;
-import pl.feature.toggle.service.model.featuretoggle.BooleanFeatureToggleValue;
-import pl.feature.toggle.service.model.featuretoggle.FeatureToggleId;
-import pl.feature.toggle.service.model.featuretoggle.FeatureToggleType;
-import pl.feature.toggle.service.read.AbstractUnitTest;
-import pl.feature.toggle.service.read.application.port.in.FeatureToggleProjectionUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import pl.feature.toggle.service.model.CreatedAt;
+import pl.feature.toggle.service.model.UpdatedAt;
+import pl.feature.toggle.service.model.featuretoggle.FeatureToggleId;
+import pl.feature.toggle.service.model.featuretoggle.value.FeatureToggleType;
+import pl.feature.toggle.service.model.featuretoggle.value.FeatureToggleValueBuilder;
+import pl.feature.toggle.service.read.AbstractUnitTest;
+import pl.feature.toggle.service.read.application.port.in.FeatureToggleProjectionUseCase;
 
 import java.util.UUID;
 
@@ -38,7 +38,7 @@ class FeatureToggleProjectionHandlerTest extends AbstractUnitTest {
                 .createdAt(CreatedAt.now().toLocalDateTime())
                 .updatedAt(UpdatedAt.now().toLocalDateTime())
                 .type(FeatureToggleType.BOOLEAN.name())
-                .value(BooleanFeatureToggleValue.enabled().stringValue())
+                .value(FeatureToggleValueBuilder.bool(true).asText())
                 .projectId(UUID.randomUUID())
                 .build();
 
@@ -53,8 +53,8 @@ class FeatureToggleProjectionHandlerTest extends AbstractUnitTest {
         assertThat(featureToggle.environmentId().uuid()).isEqualTo(event.environmentId());
         assertThat(featureToggle.createdAt().toLocalDateTime()).isEqualTo(event.createdAt());
         assertThat(featureToggle.updatedAt().toLocalDateTime()).isEqualTo(event.updatedAt());
-        assertThat(featureToggle.type()).isEqualTo(FeatureToggleType.BOOLEAN);
-        assertThat(featureToggle.value().stringValue()).isEqualTo(event.value());
+        assertThat(featureToggle.value().type()).isEqualTo(FeatureToggleType.BOOLEAN);
+        assertThat(featureToggle.value().asText()).isEqualTo(event.value());
         assertThat(featureToggle.projectId().uuid()).isEqualTo(event.projectId());
     }
 

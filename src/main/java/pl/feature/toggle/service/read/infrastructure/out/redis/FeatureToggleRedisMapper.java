@@ -4,6 +4,8 @@ import pl.feature.toggle.service.model.CreatedAt;
 import pl.feature.toggle.service.model.UpdatedAt;
 import pl.feature.toggle.service.model.environment.EnvironmentId;
 import pl.feature.toggle.service.model.featuretoggle.*;
+import pl.feature.toggle.service.model.featuretoggle.value.FeatureToggleType;
+import pl.feature.toggle.service.model.featuretoggle.value.FeatureToggleValueBuilder;
 import pl.feature.toggle.service.model.project.ProjectId;
 import pl.feature.toggle.service.read.domain.FeatureToggle;
 import pl.feature.toggle.service.read.infrastructure.out.redis.dto.FeatureToggleRedisDto;
@@ -20,8 +22,8 @@ final class FeatureToggleRedisMapper {
                 domain.environmentId().idAsString(),
                 domain.name().value(),
                 domain.description().value(),
-                domain.type().name(),
-                domain.value().stringValue(),
+                domain.value().typeName(),
+                domain.value().asText(),
                 domain.createdAt().timestamp(),
                 domain.updatedAt().timestamp()
         );
@@ -34,8 +36,7 @@ final class FeatureToggleRedisMapper {
                 EnvironmentId.create(dto.environmentId()),
                 FeatureToggleName.create(dto.name()),
                 FeatureToggleDescription.create(dto.description()),
-                FeatureToggleType.valueOf(dto.type()),
-                FeatureToggleValueRecognizer.from(dto.type(), dto.value()),
+                FeatureToggleValueBuilder.from(dto.value(), dto.type()),
                 CreatedAt.of(dto.createdAt()),
                 UpdatedAt.of(dto.updatedAt())
         );

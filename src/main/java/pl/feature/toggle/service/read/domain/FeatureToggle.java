@@ -5,6 +5,9 @@ import pl.feature.toggle.service.model.CreatedAt;
 import pl.feature.toggle.service.model.UpdatedAt;
 import pl.feature.toggle.service.model.environment.EnvironmentId;
 import pl.feature.toggle.service.model.featuretoggle.*;
+import pl.feature.toggle.service.model.featuretoggle.value.FeatureToggleType;
+import pl.feature.toggle.service.model.featuretoggle.value.FeatureToggleValue;
+import pl.feature.toggle.service.model.featuretoggle.value.FeatureToggleValueBuilder;
 import pl.feature.toggle.service.model.project.ProjectId;
 
 public record FeatureToggle(
@@ -13,7 +16,6 @@ public record FeatureToggle(
         EnvironmentId environmentId,
         FeatureToggleName name,
         FeatureToggleDescription description,
-        FeatureToggleType type,
         FeatureToggleValue value,
         CreatedAt createdAt,
         UpdatedAt updatedAt
@@ -26,8 +28,7 @@ public record FeatureToggle(
                 EnvironmentId.create(event.environmentId()),
                 FeatureToggleName.create(event.name()),
                 FeatureToggleDescription.create(event.description()),
-                FeatureToggleType.valueOf(event.type()),
-                FeatureToggleValueRecognizer.from(event.type(), event.value()),
+                FeatureToggleValueBuilder.from(event.value(), event.type()),
                 CreatedAt.of(event.createdAt()),
                 UpdatedAt.of(event.updatedAt())
         );

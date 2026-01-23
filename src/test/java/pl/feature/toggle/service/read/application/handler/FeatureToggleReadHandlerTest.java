@@ -1,10 +1,10 @@
 package pl.feature.toggle.service.read.application.handler;
 
-import pl.feature.toggle.service.read.AbstractUnitTest;
-import pl.feature.toggle.service.read.application.port.in.FeatureToggleReadUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import pl.feature.toggle.service.read.AbstractUnitTest;
+import pl.feature.toggle.service.read.application.port.in.FeatureToggleReadUseCase;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,7 +29,7 @@ class FeatureToggleReadHandlerTest extends AbstractUnitTest {
 
         // then
         assertThat(featureToggleView.id()).isEqualTo(featureToggle.id().idAsString());
-        assertThat(featureToggleView.value()).isEqualTo(featureToggle.value().stringValue());
+        assertThat(featureToggleView.value()).isEqualTo(featureToggle.value().asText());
     }
 
     @Test

@@ -1,7 +1,7 @@
 package pl.feature.toggle.service.read;
 
 import pl.feature.toggle.service.contracts.event.featuretoggle.FeatureToggleCreated;
-import pl.feature.toggle.service.model.featuretoggle.FeatureToggleType;
+import pl.feature.toggle.service.model.featuretoggle.value.FeatureToggleType;
 import pl.feature.toggle.service.read.domain.FeatureToggle;
 import org.jooq.DSLContext;
 import org.junit.jupiter.api.AfterEach;

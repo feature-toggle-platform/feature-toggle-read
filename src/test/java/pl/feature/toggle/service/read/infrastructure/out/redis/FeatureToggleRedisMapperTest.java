@@ -4,6 +4,8 @@ import pl.feature.toggle.service.model.CreatedAt;
 import pl.feature.toggle.service.model.UpdatedAt;
 import pl.feature.toggle.service.model.environment.EnvironmentId;
 import pl.feature.toggle.service.model.featuretoggle.*;
+import pl.feature.toggle.service.model.featuretoggle.value.FeatureToggleType;
+import pl.feature.toggle.service.model.featuretoggle.value.FeatureToggleValueBuilder;
 import pl.feature.toggle.service.model.project.ProjectId;
 import pl.feature.toggle.service.read.domain.FeatureToggle;
 import pl.feature.toggle.service.read.infrastructure.out.redis.dto.FeatureToggleRedisDto;
@@ -30,8 +32,7 @@ class FeatureToggleRedisMapperTest {
                 environmentId,
                 FeatureToggleName.create("new-ui"),
                 FeatureToggleDescription.create("toggle for new UI"),
-                FeatureToggleType.BOOLEAN,
-                FeatureToggleValueRecognizer.from("BOOLEAN", "TRUE"),
+                FeatureToggleValueBuilder.bool(true),
                 CreatedAt.of(now),
                 UpdatedAt.of(later)
         );
@@ -81,9 +82,9 @@ class FeatureToggleRedisMapperTest {
         assertThat(domain.environmentId().idAsString()).isEqualTo(environmentId.idAsString());
         assertThat(domain.name().value()).isEqualTo("new-ui");
         assertThat(domain.description().value()).isEqualTo("toggle for new UI");
-        assertThat(domain.type()).isEqualTo(FeatureToggleType.BOOLEAN);
+        assertThat(domain.value().type()).isEqualTo(FeatureToggleType.BOOLEAN);
 
-        assertThat(domain.value().stringValue()).isEqualTo("TRUE");
+        assertThat(domain.value().asText()).isEqualTo("TRUE");
 
         assertThat(domain.createdAt().timestamp()).isEqualTo(createdAt);
         assertThat(domain.updatedAt().timestamp()).isEqualTo(updatedAt);

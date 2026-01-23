@@ -9,7 +9,7 @@ public record FeatureToggleView(
     public static FeatureToggleView from(FeatureToggle featureToggle) {
         return new FeatureToggleView(
                 featureToggle.id().idAsString(),
-                featureToggle.value().stringValue()
+                featureToggle.value().asText()
         );
     }
 }
