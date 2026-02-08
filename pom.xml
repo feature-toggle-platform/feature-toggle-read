@@ -10,12 +10,14 @@
 	</parent>
 	<groupId>pl.feature.toggle.service</groupId>
 	<artifactId>feature-toggle-read</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>read</name>
 	<properties>
 		<java.version>21</java.version>
         <contracts.version>1.0.0-SNAPSHOT</contracts.version>
         <model.version>1.0.0-SNAPSHOT</model.version>
+        <value.version>1.0.0-SNAPSHOT</value.version>
+        <event.processing.version>1.0.0-SNAPSHOT</event.processing.version>
 	</properties>
 	<dependencies>
         <dependency>
@@ -71,6 +73,11 @@
         </dependency>
         <dependency>
             <groupId>pl.feature.toggle.service</groupId>
+            <artifactId>feature-toggle-value</artifactId>
+            <version>${value.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>pl.feature.toggle.service</groupId>
             <artifactId>feature-toggle-model</artifactId>
             <version>${model.version}</version>
         </dependency>
@@ -79,6 +86,11 @@
 			<artifactId>spring-boot-starter-data-redis-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+        <dependency>
+            <groupId>pl.feature.toggle.service</groupId>
+            <artifactId>feature-toggle-event-processing</artifactId>
+            <version>${event.processing.version}</version>
+        </dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-kafka-test</artifactId>
@@ -111,7 +123,8 @@
             <artifactId>spring-boot-testcontainers</artifactId>
             <scope>test</scope>
         </dependency>
-	</dependencies>
+
+    </dependencies>
 
     <build>
         <plugins>

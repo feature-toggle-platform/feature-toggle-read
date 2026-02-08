@@ -1,10 +1,10 @@
 package pl.feature.toggle.service.read.infrastructure;
 
 import pl.feature.toggle.service.read.application.handler.FeatureToggleHandlerFacade;
-import pl.feature.toggle.service.read.application.port.in.FeatureToggleProjectionUseCase;
+import pl.feature.toggle.service.read.application.port.in.FeatureToggleProjection;
 import pl.feature.toggle.service.read.application.port.in.FeatureToggleReadUseCase;
-import pl.feature.toggle.service.read.application.port.out.FeatureToggleReadRepository;
-import pl.feature.toggle.service.read.application.port.out.FeatureToggleSnapshotRepository;
+import pl.feature.toggle.service.read.application.port.out.FeatureToggleQueryRepository;
+import pl.feature.toggle.service.read.application.port.out.FeatureToggleProjectionRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -12,12 +12,12 @@ import org.springframework.context.annotation.Configuration;
 class Config {
 
     @Bean
-    FeatureToggleReadUseCase featureToggleReadUseCase(FeatureToggleReadRepository repository) {
+    FeatureToggleReadUseCase featureToggleReadUseCase(FeatureToggleQueryRepository repository) {
         return FeatureToggleHandlerFacade.featureToggleReadUseCase(repository);
     }
 
     @Bean
-    FeatureToggleProjectionUseCase featureToggleProjectionUseCase(FeatureToggleSnapshotRepository repository) {
+    FeatureToggleProjection featureToggleProjectionUseCase(FeatureToggleProjectionRepository repository) {
         return FeatureToggleHandlerFacade.featureToggleProjectionUseCase(repository);
     }
 }

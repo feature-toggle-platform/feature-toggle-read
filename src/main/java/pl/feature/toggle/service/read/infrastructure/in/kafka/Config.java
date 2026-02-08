@@ -1,9 +1,5 @@
 package pl.feature.toggle.service.read.infrastructure.in.kafka;
 
-import pl.feature.toggle.service.contracts.shared.EventProcessor;
-import pl.feature.toggle.service.contracts.shared.IntegrationEvent;
-import pl.feature.toggle.service.read.application.port.in.FeatureToggleProjectionUseCase;
-import pl.feature.toggle.service.read.application.port.out.ProcessedEventRepository;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -20,6 +16,11 @@ import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 import org.springframework.kafka.support.serializer.JacksonJsonDeserializer;
 import org.springframework.util.backoff.FixedBackOff;
+import pl.feature.toggle.service.contracts.shared.IntegrationEvent;
+import pl.feature.toggle.service.event.processing.api.EventProcessor;
+import pl.feature.toggle.service.read.application.port.in.EnvironmentProjection;
+import pl.feature.toggle.service.read.application.port.in.FeatureToggleProjection;
+import pl.feature.toggle.service.read.application.port.in.ProjectProjection;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -68,13 +69,11 @@ class Config {
     }
 
     @Bean
-    EventProcessor eventProcessor(ProcessedEventRepository repository) {
-        return new IdempotentEventProcessor(repository);
-    }
-
-    @Bean
-    KafkaEventConsumer kafkaEventConsumer(FeatureToggleProjectionUseCase projectionUseCase, EventProcessor eventProcessor) {
-        return new KafkaEventConsumer(projectionUseCase, eventProcessor);
+    KafkaEventConsumer kafkaEventConsumer(FeatureToggleProjection featureToggleProjection,
+                                          ProjectProjection projectProjection,
+                                          EnvironmentProjection environmentProjection,
+                                          EventProcessor eventProcessor) {
+        return new KafkaEventConsumer(featureToggleProjection, projectProjection, environmentProjection, eventProcessor);
     }
 
 }

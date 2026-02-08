@@ -2,7 +2,6 @@ package pl.feature.toggle.service.read.infrastructure.out.db;
 
 import pl.feature.toggle.service.contracts.shared.EventId;
 import pl.feature.toggle.service.read.AbstractITTest;
-import pl.feature.toggle.service.read.application.port.out.ProcessedEventRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

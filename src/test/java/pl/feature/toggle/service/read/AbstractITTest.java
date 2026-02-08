@@ -1,8 +1,8 @@
 package pl.feature.toggle.service.read;
 
 import pl.feature.toggle.service.contracts.event.featuretoggle.FeatureToggleCreated;
-import pl.feature.toggle.service.model.featuretoggle.value.FeatureToggleType;
-import pl.feature.toggle.service.read.domain.FeatureToggle;
+import pl.feature.toggle.service.model.featuretoggle.value.FeatureToggleValueType;
+import pl.feature.toggle.service.read.domain.FeatureToggleView;
 import org.jooq.DSLContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.TestInstance;
@@ -63,8 +63,8 @@ public abstract class AbstractITTest {
         dslContext.deleteFrom(PROCESSED_EVENTS).execute();
     }
 
-    protected FeatureToggle createFeatureToggle(String name) {
-        return FeatureToggle.from(featureToggleCreatedEvent(name));
+    protected FeatureToggleView createFeatureToggle(String name) {
+        return FeatureToggleView.from(featureToggleCreatedEvent(name));
     }
 
     private FeatureToggleCreated featureToggleCreatedEvent(String name) {
@@ -75,7 +75,7 @@ public abstract class AbstractITTest {
                 .environmentId(UUID.randomUUID())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
-                .type(FeatureToggleType.BOOLEAN.name())
+                .type(FeatureToggleValueType.BOOLEAN.name())
                 .value("true")
                 .projectId(UUID.randomUUID())
                 .build();
