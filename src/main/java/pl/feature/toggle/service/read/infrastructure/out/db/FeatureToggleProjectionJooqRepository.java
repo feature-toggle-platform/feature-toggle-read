@@ -76,7 +76,7 @@ class FeatureToggleProjectionJooqRepository implements FeatureToggleProjectionRe
                 .set(FEATURE_TOGGLE_VIEW.CREATED_AT, view.createdAt().toLocalDateTime())
                 .set(FEATURE_TOGGLE_VIEW.UPDATED_AT, view.updatedAt().toLocalDateTime())
                 .set(FEATURE_TOGGLE_VIEW.REVISION, view.revision().value())
-                .set(FEATURE_TOGGLE_VIEW.CONSISTENT, true)
+                .set(FEATURE_TOGGLE_VIEW.CONSISTENT, view.consistent())
                 .onConflict(FEATURE_TOGGLE_VIEW.ID)
                 .doUpdate()
                 .set(FEATURE_TOGGLE_VIEW.PROJECT_ID, view.projectId().uuid())
@@ -88,7 +88,7 @@ class FeatureToggleProjectionJooqRepository implements FeatureToggleProjectionRe
                 .set(FEATURE_TOGGLE_VIEW.STATUS, view.status().name())
                 .set(FEATURE_TOGGLE_VIEW.UPDATED_AT, view.updatedAt().toLocalDateTime())
                 .set(FEATURE_TOGGLE_VIEW.REVISION, view.revision().value())
-                .set(FEATURE_TOGGLE_VIEW.CONSISTENT, true)
+                .set(FEATURE_TOGGLE_VIEW.CONSISTENT, view.consistent())
                 .execute();
     }
 

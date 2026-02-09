@@ -55,14 +55,14 @@ class ProjectProjectionJooqRepository implements ProjectProjectionRepository {
                 .set(PROJECT_VIEW.CREATED_AT, view.createdAt().toLocalDateTime())
                 .set(PROJECT_VIEW.STATUS, view.status().name())
                 .set(PROJECT_VIEW.REVISION, view.revision().value())
-                .set(PROJECT_VIEW.CONSISTENT, true)
+                .set(PROJECT_VIEW.CONSISTENT, view.consistent())
                 .onConflict(PROJECT_VIEW.ID)
                 .doUpdate()
                 .set(PROJECT_VIEW.NAME, view.name().value())
                 .set(PROJECT_VIEW.DESCRIPTION, view.description().value())
                 .set(PROJECT_VIEW.STATUS, view.status().name())
                 .set(PROJECT_VIEW.REVISION, view.revision().value())
-                .set(PROJECT_VIEW.CONSISTENT, true)
+                .set(PROJECT_VIEW.CONSISTENT, view.consistent())
                 .execute();
     }
 

@@ -67,7 +67,7 @@ class EnvironmentProjectionJooqRepository implements EnvironmentProjectionReposi
                 .set(ENVIRONMENT_VIEW.CREATED_AT, view.createdAt().toLocalDateTime())
                 .set(ENVIRONMENT_VIEW.STATUS, view.status().name())
                 .set(ENVIRONMENT_VIEW.REVISION, view.revision().value())
-                .set(ENVIRONMENT_VIEW.CONSISTENT, true)
+                .set(ENVIRONMENT_VIEW.CONSISTENT, view.consistent())
                 .onConflict(ENVIRONMENT_VIEW.ID)
                 .doUpdate()
                 .set(ENVIRONMENT_VIEW.ID, view.id().uuid())
@@ -77,7 +77,7 @@ class EnvironmentProjectionJooqRepository implements EnvironmentProjectionReposi
                 .set(ENVIRONMENT_VIEW.CREATED_AT, view.createdAt().toLocalDateTime())
                 .set(ENVIRONMENT_VIEW.STATUS, view.status().name())
                 .set(ENVIRONMENT_VIEW.REVISION, view.revision().value())
-                .set(ENVIRONMENT_VIEW.CONSISTENT, true)
+                .set(ENVIRONMENT_VIEW.CONSISTENT, view.consistent())
                 .execute();
     }
 
