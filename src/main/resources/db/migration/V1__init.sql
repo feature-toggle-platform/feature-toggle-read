@@ -9,6 +9,7 @@ CREATE TABLE project_view
     name        varchar(100) not null unique,
     description varchar(200),
     created_at  timestamp    not null,
+    updated_at  timestamp    not null,
     status      varchar(10)  not null,
     revision    bigint       not null,
     consistent  boolean      not null default true
@@ -20,6 +21,7 @@ CREATE TABLE environment_view
     project_id uuid         not null references project_view (id),
     name       varchar(100) not null,
     created_at timestamp    not null,
+    updated_at  timestamp    not null,
     status     varchar(10)  not null,
     type       varchar(10)  not null,
     revision   bigint       not null,

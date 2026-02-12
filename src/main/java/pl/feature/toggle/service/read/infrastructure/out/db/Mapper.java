@@ -35,6 +35,7 @@ class Mapper {
                 ProjectDescription.create(record.getDescription()),
                 ProjectStatus.valueOf(record.getStatus()),
                 CreatedAt.of(record.getCreatedAt()),
+                UpdatedAt.of(record.getUpdatedAt()),
                 Revision.from(record.getRevision()),
                 record.getConsistent()
         );
@@ -48,6 +49,7 @@ class Mapper {
                 record.getType(),
                 EnvironmentStatus.valueOf(record.getStatus()),
                 CreatedAt.of(record.getCreatedAt()),
+                UpdatedAt.of(record.getUpdatedAt()),
                 Revision.from(record.getRevision()),
                 record.getConsistent()
         );

@@ -1,60 +1,53 @@
 package pl.feature.toggle.service.read;
 
-import pl.feature.toggle.service.contracts.event.featuretoggle.FeatureToggleCreated;
-import pl.feature.toggle.service.model.featuretoggle.value.FeatureToggleValueType;
-import pl.feature.toggle.service.read.domain.FeatureToggleView;
-import pl.feature.toggle.service.read.infrastructure.FakeAcknowledgment;
-import pl.feature.toggle.service.read.infrastructure.out.FakeFeatureToggleReadRepository;
-import pl.feature.toggle.service.read.infrastructure.out.FakeFeatureToggleSnapshotRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
-
-import static pl.feature.toggle.service.contracts.event.featuretoggle.FeatureToggleCreated.featureToggleCreatedEventBuilder;
+import pl.feature.toggle.service.event.processing.api.RevisionProjectionApplier;
+import pl.feature.toggle.service.event.processing.internal.DefaultRevisionProjectionApplier;
+import pl.feature.toggle.service.read.infrastructure.support.*;
 
 public abstract class AbstractUnitTest {
 
-    protected FakeFeatureToggleReadRepository fakeFeatureToggleReadRepository;
-    protected FakeFeatureToggleSnapshotRepository fakeFeatureToggleSnapshotRepository;
-    protected FakeAcknowledgment acknowledgment;
+    protected EnvironmentViewConsistencySpy environmentViewConsistencySpy;
+    protected EnvironmentViewProjectionRepositorySpy environmentViewProjectionRepositorySpy;
+    protected EnvironmentViewQueryRepositoryStub environmentViewQueryRepositoryStub;
+    protected ProjectViewConsistencySpy projectViewConsistencySpy;
+    protected ProjectViewProjectionRepositorySpy projectViewProjectionRepositorySpy;
+    protected ProjectViewQueryRepositoryStub projectViewQueryRepositoryStub;
+    protected FeatureToggleViewConsistencySpy featureToggleViewConsistencySpy;
+    protected FeatureToggleViewProjectionRepositorySpy featureToggleViewProjectionRepositorySpy;
+    protected FeatureToggleViewQueryRepositoryStub featureToggleViewQueryRepositoryStub;
+
+    protected RevisionProjectionApplier revisionProjectionApplier;
+    protected ApplicationEventPublishedSpy applicationEventPublishedSpy;
 
     @BeforeEach
     void setUp() {
-        fakeFeatureToggleReadRepository = new FakeFeatureToggleReadRepository();
-        fakeFeatureToggleSnapshotRepository = new FakeFeatureToggleSnapshotRepository(fakeFeatureToggleReadRepository);
-        acknowledgment = new FakeAcknowledgment();
+        environmentViewConsistencySpy = new EnvironmentViewConsistencySpy();
+        environmentViewProjectionRepositorySpy = new EnvironmentViewProjectionRepositorySpy();
+        environmentViewQueryRepositoryStub = new EnvironmentViewQueryRepositoryStub();
+        projectViewConsistencySpy = new ProjectViewConsistencySpy();
+        projectViewProjectionRepositorySpy = new ProjectViewProjectionRepositorySpy();
+        projectViewQueryRepositoryStub = new ProjectViewQueryRepositoryStub();
+        featureToggleViewConsistencySpy = new FeatureToggleViewConsistencySpy();
+        featureToggleViewProjectionRepositorySpy = new FeatureToggleViewProjectionRepositorySpy();
+        featureToggleViewQueryRepositoryStub = new FeatureToggleViewQueryRepositoryStub();
+        revisionProjectionApplier = DefaultRevisionProjectionApplier.create();
+        applicationEventPublishedSpy = new ApplicationEventPublishedSpy();
     }
 
     @AfterEach
     void tearDown() {
-        fakeFeatureToggleReadRepository.clear();
-        fakeFeatureToggleSnapshotRepository.clear();
+        environmentViewConsistencySpy.reset();
+        environmentViewProjectionRepositorySpy.reset();
+        environmentViewQueryRepositoryStub.reset();
+        projectViewConsistencySpy.reset();
+        projectViewProjectionRepositorySpy.reset();
+        projectViewQueryRepositoryStub.reset();
+        featureToggleViewConsistencySpy.reset();
+        featureToggleViewProjectionRepositorySpy.reset();
+        featureToggleViewQueryRepositoryStub.reset();
     }
 
-
-    protected FeatureToggleView insertFeatureToggle(FeatureToggleView featureToggleView) {
-        fakeFeatureToggleReadRepository.insert(featureToggleView);
-        return featureToggleView;
-    }
-
-    protected FeatureToggleView createFeatureToggle(String name) {
-        return FeatureToggleView.from(featureToggleCreatedEvent(name));
-    }
-
-    private FeatureToggleCreated featureToggleCreatedEvent(String name) {
-        return featureToggleCreatedEventBuilder()
-                .name(name)
-                .id(UUID.randomUUID())
-                .description("description")
-                .environmentId(UUID.randomUUID())
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .type(FeatureToggleValueType.BOOLEAN.name())
-                .value("true")
-                .projectId(UUID.randomUUID())
-                .build();
-    }
 
 }
