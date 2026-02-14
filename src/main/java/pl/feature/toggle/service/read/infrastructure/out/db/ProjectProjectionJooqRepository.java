@@ -20,6 +20,7 @@ class ProjectProjectionJooqRepository implements ProjectProjectionRepository {
                 .set(PROJECT_VIEW.NAME, view.name().value())
                 .set(PROJECT_VIEW.DESCRIPTION, view.description().value())
                 .set(PROJECT_VIEW.CREATED_AT, view.createdAt().toLocalDateTime())
+                .set(PROJECT_VIEW.UPDATED_AT, view.updatedAt().toLocalDateTime())
                 .set(PROJECT_VIEW.STATUS, view.status().name())
                 .set(PROJECT_VIEW.REVISION, view.revision().value())
                 .set(PROJECT_VIEW.CONSISTENT, view.consistent())
@@ -37,9 +38,10 @@ class ProjectProjectionJooqRepository implements ProjectProjectionRepository {
     }
 
     @Override
-    public void updateName(ProjectView view) {
+    public void updateBasicFields(ProjectView view) {
         dslContext.update(PROJECT_VIEW)
                 .set(PROJECT_VIEW.NAME, view.name().value())
+                .set(PROJECT_VIEW.DESCRIPTION, view.description().value())
                 .set(PROJECT_VIEW.REVISION, view.revision().value())
                 .set(PROJECT_VIEW.CONSISTENT, view.consistent())
                 .where(PROJECT_VIEW.ID.eq(view.id().uuid()))
@@ -53,6 +55,7 @@ class ProjectProjectionJooqRepository implements ProjectProjectionRepository {
                 .set(PROJECT_VIEW.NAME, view.name().value())
                 .set(PROJECT_VIEW.DESCRIPTION, view.description().value())
                 .set(PROJECT_VIEW.CREATED_AT, view.createdAt().toLocalDateTime())
+                .set(PROJECT_VIEW.UPDATED_AT, view.updatedAt().toLocalDateTime())
                 .set(PROJECT_VIEW.STATUS, view.status().name())
                 .set(PROJECT_VIEW.REVISION, view.revision().value())
                 .set(PROJECT_VIEW.CONSISTENT, view.consistent())
@@ -60,6 +63,7 @@ class ProjectProjectionJooqRepository implements ProjectProjectionRepository {
                 .doUpdate()
                 .set(PROJECT_VIEW.NAME, view.name().value())
                 .set(PROJECT_VIEW.DESCRIPTION, view.description().value())
+                .set(PROJECT_VIEW.UPDATED_AT, view.updatedAt().toLocalDateTime())
                 .set(PROJECT_VIEW.STATUS, view.status().name())
                 .set(PROJECT_VIEW.REVISION, view.revision().value())
                 .set(PROJECT_VIEW.CONSISTENT, view.consistent())

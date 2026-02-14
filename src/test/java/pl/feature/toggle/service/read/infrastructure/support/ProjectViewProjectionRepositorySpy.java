@@ -70,7 +70,7 @@ public class ProjectViewProjectionRepositorySpy implements ProjectProjectionRepo
     }
 
     @Override
-    public void updateName(ProjectView view) {
+    public void updateBasicFields(ProjectView view) {
         if (failOnAnyCall || noUpdates) {
             throw new AssertionError("update should not be called");
         }

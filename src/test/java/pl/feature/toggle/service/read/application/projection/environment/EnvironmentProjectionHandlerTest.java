@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
 import static pl.feature.toggle.service.contracts.event.environment.EnvironmentCreated.environmentCreatedEventBuilder;
 import static pl.feature.toggle.service.contracts.event.environment.EnvironmentStatusChanged.environmentStatusChangedEventBuilder;
+import static pl.feature.toggle.service.contracts.event.environment.EnvironmentTypeChanged.environmentTypeChangedBuilder;
+import static pl.feature.toggle.service.contracts.event.environment.EnvironmentUpdated.environmentUpdatedEventBuilder;
 import static pl.feature.toggle.service.read.builder.FakeEnvironmentViewBuilder.fakeEnvironmentViewBuilder;
 
 class EnvironmentProjectionHandlerTest extends AbstractUnitTest {
@@ -65,7 +67,7 @@ class EnvironmentProjectionHandlerTest extends AbstractUnitTest {
     }
 
     @Test
-    void should_update_environment_when_exists() {
+    void should_update_environment_status_when_exists() {
         // given
         var existingEnv = fakeEnvironmentViewBuilder()
                 .status(EnvironmentStatus.ACTIVE)
@@ -90,6 +92,66 @@ class EnvironmentProjectionHandlerTest extends AbstractUnitTest {
         // then
         var updated = environmentViewProjectionRepositorySpy.lastUpdated();
         assertThat(updated.status()).isEqualTo(EnvironmentStatus.ARCHIVED);
+        assertThat(updated.revision()).isEqualTo(existingEnv.revision().next());
+    }
+
+    @Test
+    void should_update_environment_type() {
+        // given
+        var existingEnv = fakeEnvironmentViewBuilder()
+                .status(EnvironmentStatus.ACTIVE)
+                .type("PROD")
+                .build();
+
+        environmentViewQueryRepositoryStub.findReturns(existingEnv);
+        environmentViewProjectionRepositorySpy.expectNoInserts();
+        environmentViewProjectionRepositorySpy.expectNoUpserts();
+        environmentViewProjectionRepositorySpy.expectNoMarkInconsistent();
+        applicationEventPublishedSpy.expectNoEvents();
+
+        var event = environmentTypeChangedBuilder()
+                .projectId(existingEnv.projectId().uuid())
+                .environmentId(existingEnv.id().uuid())
+                .type("DEV")
+                .revision(existingEnv.revision().next().value())
+                .build();
+
+        // when
+        sut.handle(event);
+
+        // then
+        var updated = environmentViewProjectionRepositorySpy.lastUpdated();
+        assertThat(updated.type()).isEqualTo(event.type());
+        assertThat(updated.revision()).isEqualTo(existingEnv.revision().next());
+    }
+
+    @Test
+    void should_update_environment_fields() {
+        // given
+        var existingEnv = fakeEnvironmentViewBuilder()
+                .status(EnvironmentStatus.ACTIVE)
+                .name("BEFORE")
+                .build();
+
+        environmentViewQueryRepositoryStub.findReturns(existingEnv);
+        environmentViewProjectionRepositorySpy.expectNoInserts();
+        environmentViewProjectionRepositorySpy.expectNoUpserts();
+        environmentViewProjectionRepositorySpy.expectNoMarkInconsistent();
+        applicationEventPublishedSpy.expectNoEvents();
+
+        var event = environmentUpdatedEventBuilder()
+                .projectId(existingEnv.projectId().uuid())
+                .environmentId(existingEnv.id().uuid())
+                .environmentName("AFTER")
+                .revision(existingEnv.revision().next().value())
+                .build();
+
+        // when
+        sut.handle(event);
+
+        // then
+        var updated = environmentViewProjectionRepositorySpy.lastUpdated();
+        assertThat(updated.name().value()).isEqualTo(event.environmentName());
         assertThat(updated.revision()).isEqualTo(existingEnv.revision().next());
     }
 

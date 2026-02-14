@@ -10,7 +10,10 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import static pl.feature.ftaas.jooq.tables.EnvironmentView.ENVIRONMENT_VIEW;
+import static pl.feature.ftaas.jooq.tables.FeatureToggleView.FEATURE_TOGGLE_VIEW;
 import static pl.feature.ftaas.jooq.tables.ProcessedEvents.PROCESSED_EVENTS;
+import static pl.feature.ftaas.jooq.tables.ProjectView.PROJECT_VIEW;
 
 
 @Testcontainers
@@ -35,10 +38,25 @@ public abstract class AbstractITTest {
 
     @AfterEach
     void tearDown() {
+        clearFeatureToggles();
+        clearEnvironments();
+        clearProjects();
         clearProcessedEvents();
     }
 
-    protected void clearProcessedEvents() {
+    private void clearFeatureToggles() {
+        dslContext.deleteFrom(FEATURE_TOGGLE_VIEW).execute();
+    }
+
+    private void clearEnvironments() {
+        dslContext.deleteFrom(ENVIRONMENT_VIEW).execute();
+    }
+
+    private void clearProjects() {
+        dslContext.deleteFrom(PROJECT_VIEW).execute();
+    }
+
+    private void clearProcessedEvents() {
         dslContext.deleteFrom(PROCESSED_EVENTS).execute();
     }
 }

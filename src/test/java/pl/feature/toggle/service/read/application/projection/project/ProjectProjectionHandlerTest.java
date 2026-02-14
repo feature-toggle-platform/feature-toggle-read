@@ -2,6 +2,7 @@ package pl.feature.toggle.service.read.application.projection.project;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import pl.feature.toggle.service.contracts.event.project.ProjectUpdated;
 import pl.feature.toggle.service.model.Revision;
 import pl.feature.toggle.service.model.project.ProjectId;
 import pl.feature.toggle.service.model.project.ProjectStatus;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
 import static pl.feature.toggle.service.contracts.event.project.ProjectCreated.projectCreatedEventBuilder;
 import static pl.feature.toggle.service.contracts.event.project.ProjectStatusChanged.projectStatusChangedEventBuilder;
+import static pl.feature.toggle.service.contracts.event.project.ProjectUpdated.projectUpdatedEventBuilder;
 import static pl.feature.toggle.service.read.builder.FakeProjectViewBuilder.fakeProjectViewBuilder;
 
 class ProjectProjectionHandlerTest extends AbstractUnitTest {
@@ -62,7 +64,7 @@ class ProjectProjectionHandlerTest extends AbstractUnitTest {
     }
 
     @Test
-    void should_update_project_when_exists() {
+    void should_change_project_status_when_exists() {
         var existing = fakeProjectViewBuilder()
                 .status(ProjectStatus.ACTIVE)
                 .build();
@@ -86,6 +88,36 @@ class ProjectProjectionHandlerTest extends AbstractUnitTest {
         var updated = projectViewProjectionRepositorySpy.lastUpdated();
         assertThat(updated.status()).isEqualTo(ProjectStatus.ARCHIVED);
         assertThat(updated.revision()).isEqualTo(existing.revision().next());
+    }
+
+    @Test
+    void should_update_project_fields() {
+        // given
+        var existing = fakeProjectViewBuilder()
+                .name("OLD_NAME")
+                .status(ProjectStatus.ACTIVE)
+                .build();
+        projectViewQueryRepositoryStub.findReturns(existing);
+        projectViewProjectionRepositorySpy.expectNoInserts();
+        projectViewProjectionRepositorySpy.expectNoUpserts();
+        projectViewProjectionRepositorySpy.expectNoMarkInconsistent();
+        applicationEventPublishedSpy.expectNoEvents();
+
+        var event = projectUpdatedEventBuilder()
+                .projectName("NEW NAME")
+                .projectDescription("NEW DESCRIPTION")
+                .projectId(existing.id().uuid())
+                .revision(existing.revision().next().value())
+                .build();
+
+        //when
+        sut.handle(event);
+
+        // then
+        var updated = projectViewProjectionRepositorySpy.lastUpdated();
+        assertThat(updated.name().value()).isEqualTo(event.projectName());
+        assertThat(updated.description().value()).isEqualTo(event.projectDescription());
+        assertThat(updated.revision().value()).isEqualTo(event.revision());
     }
 
     @Test

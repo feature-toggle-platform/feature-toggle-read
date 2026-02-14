@@ -52,6 +52,11 @@ public class FakeEnvironmentViewBuilder {
         return this;
     }
 
+    public FakeEnvironmentViewBuilder name(String name) {
+        this.name = EnvironmentName.create(name);
+        return this;
+    }
+
     public FakeEnvironmentViewBuilder type(String type) {
         this.type = type;
         return this;

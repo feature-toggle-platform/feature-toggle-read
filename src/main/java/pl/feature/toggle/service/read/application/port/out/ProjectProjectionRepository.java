@@ -9,7 +9,7 @@ public interface ProjectProjectionRepository {
 
     void updateStatus(ProjectView view);
 
-    void updateName(ProjectView view);
+    void updateBasicFields(ProjectView view);
 
     void upsert(ProjectView view);
 

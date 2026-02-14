@@ -52,7 +52,7 @@ public record ProjectView(
         return new ProjectView(
                 this.id,
                 ProjectName.create(event.projectName()),
-                this.description,
+                ProjectDescription.create(event.projectDescription()),
                 this.status,
                 this.createdAt,
                 UpdatedAt.of(event.updatedAt()),

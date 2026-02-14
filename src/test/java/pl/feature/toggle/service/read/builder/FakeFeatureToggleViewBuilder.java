@@ -65,8 +65,18 @@ public class FakeFeatureToggleViewBuilder {
         return this;
     }
 
+    public FakeFeatureToggleViewBuilder name(String name) {
+        this.name = FeatureToggleName.create(name);
+        return this;
+    }
+
     public FakeFeatureToggleViewBuilder description(FeatureToggleDescription description) {
         this.description = description;
+        return this;
+    }
+
+    public FakeFeatureToggleViewBuilder description(String description) {
+        this.description = FeatureToggleDescription.create(description);
         return this;
     }
 

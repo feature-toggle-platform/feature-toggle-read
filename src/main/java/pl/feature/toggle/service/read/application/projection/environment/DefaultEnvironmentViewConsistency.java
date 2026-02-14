@@ -28,8 +28,8 @@ class DefaultEnvironmentViewConsistency implements EnvironmentViewConsistency {
     }
 
     private EnvironmentView fetchAndSaveEnvironmentView(ProjectId projectId, EnvironmentId environmentId) {
-        var environmentRef = configurationClient.fetchEnvironment(projectId, environmentId);
-        projectionRepository.upsert(environmentRef);
-        return environmentRef;
+        var environmentView = configurationClient.fetchEnvironment(projectId, environmentId);
+        projectionRepository.upsert(environmentView);
+        return environmentView;
     }
 }

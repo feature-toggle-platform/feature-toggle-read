@@ -42,7 +42,7 @@ class ProjectProjectionHandler implements ProjectProjection {
         applyUpdate(
                 incoming,
                 projectId,
-                projectionRepository::updateName,
+                projectionRepository::updateBasicFields,
                 current -> current.apply(event)
         );
     }

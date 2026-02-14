@@ -45,6 +45,11 @@ public class FakeProjectViewBuilder {
         return this;
     }
 
+    public FakeProjectViewBuilder name(String name) {
+        this.name = ProjectName.create(name);
+        return this;
+    }
+
     public FakeProjectViewBuilder description(ProjectDescription description) {
         this.description = description;
         return this;
