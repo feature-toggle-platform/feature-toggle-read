@@ -80,8 +80,7 @@ class FeatureToggleProjectionHandler implements FeatureToggleProjection {
                         .onMissing(() -> projectionRepository.insert(view))
                         .extractCurrentRevisionUsing(FeatureToggleView::revision)
                         .applyUpdateWhenApplicable(current -> projectionRepository.upsert(view))
-                        .markInconsistentWhenGapDetectedIfNotMarked(
-                                () -> projectionRepository.markInconsistentIfNotMarked(featureToggleId))
+                        .markInconsistentWhenGapDetectedIfNotMarked(() -> projectionRepository.markInconsistentIfNotMarked(featureToggleId))
                         .publishRebuildWhenGapDetected(() -> eventPublisher.publishEvent(rebuildEvent))
                         .build()
         );

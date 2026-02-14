@@ -81,15 +81,9 @@ class EnvironmentProjectionHandler implements EnvironmentProjection {
                         .findCurrentUsing(() -> queryRepository.find(projectId, environmentId))
                         .onMissing(() -> projectionRepository.insert(view))
                         .extractCurrentRevisionUsing(EnvironmentView::revision)
-                        .applyUpdateWhenApplicable(current ->
-                                projectionRepository.upsert(view)
-                        )
-                        .markInconsistentWhenGapDetectedIfNotMarked(
-                                () -> projectionRepository.markInconsistentIfNotMarked(environmentId)
-                        )
-                        .publishRebuildWhenGapDetected(
-                                () -> eventPublisher.publishEvent(rebuildEvent)
-                        )
+                        .applyUpdateWhenApplicable(current -> projectionRepository.upsert(view))
+                        .markInconsistentWhenGapDetectedIfNotMarked(() -> projectionRepository.markInconsistentIfNotMarked(environmentId))
+                        .publishRebuildWhenGapDetected(() -> eventPublisher.publishEvent(rebuildEvent))
                         .build()
         );
     }

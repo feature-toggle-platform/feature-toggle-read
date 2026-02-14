@@ -9,6 +9,9 @@ import pl.feature.toggle.service.model.environment.EnvironmentStatus;
 import pl.feature.toggle.service.model.project.ProjectId;
 import pl.feature.toggle.service.read.domain.EnvironmentView;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 public class FakeEnvironmentViewBuilder {
 
     private EnvironmentId id;
@@ -24,7 +27,7 @@ public class FakeEnvironmentViewBuilder {
     private FakeEnvironmentViewBuilder() {
         id = EnvironmentId.create();
         projectId = ProjectId.create();
-        name = EnvironmentName.create("env-name");
+        name = EnvironmentName.create("env" + UUID.randomUUID());
         type = "DEFAULT";
         status = EnvironmentStatus.ACTIVE;
         createdAt = CreatedAt.now();
@@ -69,6 +72,16 @@ public class FakeEnvironmentViewBuilder {
 
     public FakeEnvironmentViewBuilder createdAt(CreatedAt createdAt) {
         this.createdAt = createdAt;
+        return this;
+    }
+
+    public FakeEnvironmentViewBuilder createdAt(LocalDateTime createdAt) {
+        this.createdAt = CreatedAt.of(createdAt);
+        return this;
+    }
+
+    public FakeEnvironmentViewBuilder updatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = UpdatedAt.of(updatedAt);
         return this;
     }
 

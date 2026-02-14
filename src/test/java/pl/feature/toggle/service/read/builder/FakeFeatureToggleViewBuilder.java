@@ -13,6 +13,8 @@ import pl.feature.toggle.service.read.domain.FeatureToggleView;
 import pl.feature.toggle.service.value.FeatureToggleValue;
 import pl.feature.toggle.service.value.FeatureToggleValueBuilder;
 
+import java.time.LocalDateTime;
+
 public class FakeFeatureToggleViewBuilder {
 
     private FeatureToggleId id;
@@ -100,8 +102,18 @@ public class FakeFeatureToggleViewBuilder {
         return this;
     }
 
+    public FakeFeatureToggleViewBuilder createdAt(LocalDateTime createdAt) {
+        this.createdAt = CreatedAt.of(createdAt);
+        return this;
+    }
+
     public FakeFeatureToggleViewBuilder updatedAt(UpdatedAt updatedAt) {
         this.updatedAt = updatedAt;
+        return this;
+    }
+
+    public FakeFeatureToggleViewBuilder updatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = UpdatedAt.of(updatedAt);
         return this;
     }
 

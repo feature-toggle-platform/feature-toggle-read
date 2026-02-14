@@ -9,6 +9,8 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import pl.feature.toggle.service.model.environment.EnvironmentId;
+import pl.feature.toggle.service.model.project.ProjectId;
 
 import static pl.feature.ftaas.jooq.tables.EnvironmentView.ENVIRONMENT_VIEW;
 import static pl.feature.ftaas.jooq.tables.FeatureToggleView.FEATURE_TOGGLE_VIEW;
@@ -35,6 +37,9 @@ public abstract class AbstractITTest {
 
     @Autowired
     private DSLContext dslContext;
+
+    protected static final EnvironmentId ENVIRONMENT_ID = EnvironmentId.create();
+    protected static final ProjectId PROJECT_ID = ProjectId.create();
 
     @AfterEach
     void tearDown() {

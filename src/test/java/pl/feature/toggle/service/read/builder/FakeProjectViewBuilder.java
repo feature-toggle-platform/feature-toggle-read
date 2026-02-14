@@ -9,6 +9,9 @@ import pl.feature.toggle.service.model.project.ProjectName;
 import pl.feature.toggle.service.model.project.ProjectStatus;
 import pl.feature.toggle.service.read.domain.ProjectView;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 public class FakeProjectViewBuilder {
 
     private ProjectId id;
@@ -22,8 +25,8 @@ public class FakeProjectViewBuilder {
 
     private FakeProjectViewBuilder() {
         id = ProjectId.create();
-        name = ProjectName.create("project-name");
-        description = ProjectDescription.create("description");
+        name = ProjectName.create("project" + UUID.randomUUID());
+        description = ProjectDescription.create("description-" + UUID.randomUUID());
         status = ProjectStatus.ACTIVE;
         createdAt = CreatedAt.now();
         updatedAt = UpdatedAt.now();
@@ -55,6 +58,11 @@ public class FakeProjectViewBuilder {
         return this;
     }
 
+    public FakeProjectViewBuilder description(String description) {
+        this.description = ProjectDescription.create(description);
+        return this;
+    }
+
     public FakeProjectViewBuilder status(ProjectStatus status) {
         this.status = status;
         return this;
@@ -65,8 +73,18 @@ public class FakeProjectViewBuilder {
         return this;
     }
 
+    public FakeProjectViewBuilder createdAt(LocalDateTime createdAt) {
+        this.createdAt = CreatedAt.of(createdAt);
+        return this;
+    }
+
     public FakeProjectViewBuilder updatedAt(UpdatedAt updatedAt) {
         this.updatedAt = updatedAt;
+        return this;
+    }
+
+    public FakeProjectViewBuilder updatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = UpdatedAt.of(updatedAt);
         return this;
     }
 
