@@ -4,7 +4,7 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
   datasource:
-    url: jdbc:postgresql://localhost:5434/toggleread
+    url: jdbc:postgresql://localhost:5434/feature_toggle_read
     username: admin
     password: admin
     driver-class-name: org.postgresql.Driver
@@ -19,6 +19,7 @@ spring:
 
 topics:
   feature-toggle-events: feature-toggle-events
+  feature-toggle-configuration-events: feature-toggle-configuration-events
 
 server:
   port: 8083
