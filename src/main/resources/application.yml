@@ -23,3 +23,8 @@ topics:
 
 server:
   port: 8083
+
+#logging:
+#  level:
+#    org.springframework.kafka: DEBUG
+#    org.apache.kafka.clients.consumer: DEBUG
