@@ -4,11 +4,10 @@ import pl.feature.toggle.service.model.environment.EnvironmentId;
 import pl.feature.toggle.service.model.featuretoggle.FeatureToggleId;
 import pl.feature.toggle.service.model.project.ProjectId;
 import pl.feature.toggle.service.read.StubSupport;
-import pl.feature.toggle.service.read.application.port.out.EnvironmentQueryRepository;
 import pl.feature.toggle.service.read.application.port.out.FeatureToggleQueryRepository;
-import pl.feature.toggle.service.read.domain.EnvironmentView;
 import pl.feature.toggle.service.read.domain.FeatureToggleView;
 
+import java.util.List;
 import java.util.Optional;
 
 import static pl.feature.toggle.service.read.StubSupport.forMethod;
@@ -19,6 +18,8 @@ public class FeatureToggleViewQueryRepositoryStub implements FeatureToggleQueryR
             forMethod("find(FeatureToggleId)");
     private final StubSupport<Optional<FeatureToggleView>> findConsistent =
             forMethod("findConsistent(FeatureToggleId)");
+    private final StubSupport<List<FeatureToggleView>> findByContext =
+            forMethod("findByContext(ProjectId, EnvironmentId)");
 
     public void findReturns(FeatureToggleView value) {
         find.willReturn(Optional.ofNullable(value));
@@ -36,6 +37,14 @@ public class FeatureToggleViewQueryRepositoryStub implements FeatureToggleQueryR
         findConsistent.willThrow(ex);
     }
 
+    public void findByContextReturns(List<FeatureToggleView> value) {
+        findByContext.willReturn(value);
+    }
+
+    public void findByContextThrows(RuntimeException ex) {
+        findByContext.willThrow(ex);
+    }
+
     @Override
     public Optional<FeatureToggleView> find(FeatureToggleId featureToggleId) {
         return find.get();
@@ -46,8 +55,14 @@ public class FeatureToggleViewQueryRepositoryStub implements FeatureToggleQueryR
         return findConsistent.get();
     }
 
+    @Override
+    public List<FeatureToggleView> findByContext(ProjectId projectId, EnvironmentId environmentId) {
+        return findByContext.get();
+    }
+
     public void reset() {
         find.reset();
         findConsistent.reset();
+        findByContext.reset();
     }
 }

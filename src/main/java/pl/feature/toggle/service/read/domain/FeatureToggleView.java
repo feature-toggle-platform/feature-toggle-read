@@ -15,7 +15,7 @@ import pl.feature.toggle.service.model.featuretoggle.FeatureToggleStatus;
 import pl.feature.toggle.service.model.project.ProjectId;
 import pl.feature.toggle.service.value.FeatureToggleValue;
 import pl.feature.toggle.service.value.FeatureToggleValueBuilder;
-import pl.feature.toggle.service.value.raw.FeatureToggleRawValue;
+import pl.feature.toggle.service.value.FeatureToggleValueSnapshot;
 
 public record FeatureToggleView(
         FeatureToggleId id,
@@ -39,7 +39,7 @@ public record FeatureToggleView(
                 EnvironmentId.create(event.environmentId()),
                 FeatureToggleName.create(event.name()),
                 FeatureToggleDescription.create(event.description()),
-                FeatureToggleValueBuilder.from(FeatureToggleRawValue.of(event.value()), event.type()),
+                FeatureToggleValueBuilder.from(FeatureToggleValueSnapshot.of(event.value()), event.type()),
                 FeatureToggleStatus.valueOf(event.status()),
                 Revision.from(event.revision()),
                 CreatedAt.of(event.createdAt()),
@@ -71,7 +71,7 @@ public record FeatureToggleView(
                 this.environmentId,
                 this.name,
                 this.description,
-                FeatureToggleValueBuilder.from(FeatureToggleRawValue.of(event.value()), event.type()),
+                FeatureToggleValueBuilder.from(FeatureToggleValueSnapshot.of(event.value()), event.type()),
                 this.status,
                 Revision.from(event.revision()),
                 this.createdAt,

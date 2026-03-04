@@ -9,4 +9,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/rest/api/feature-toggles/read")
 class FeatureToggleController {
 
+
 }

@@ -23,7 +23,7 @@ import pl.feature.toggle.service.read.domain.EnvironmentView;
 import pl.feature.toggle.service.read.domain.FeatureToggleView;
 import pl.feature.toggle.service.read.domain.ProjectView;
 import pl.feature.toggle.service.value.FeatureToggleValueBuilder;
-import pl.feature.toggle.service.value.raw.FeatureToggleRawValue;
+import pl.feature.toggle.service.value.FeatureToggleValueSnapshot;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 class Mapper {
@@ -63,7 +63,7 @@ class Mapper {
                 EnvironmentId.create(record.getEnvironmentId()),
                 FeatureToggleName.create(record.getName()),
                 FeatureToggleDescription.create(record.getDescription()),
-                FeatureToggleValueBuilder.from(FeatureToggleRawValue.of(record.getCurrentValue()), record.getType()),
+                FeatureToggleValueBuilder.from(FeatureToggleValueSnapshot.of(record.getCurrentValue()), record.getType()),
                 FeatureToggleStatus.valueOf(record.getStatus()),
                 Revision.from(record.getRevision()),
                 CreatedAt.of(record.getCreatedAt()),

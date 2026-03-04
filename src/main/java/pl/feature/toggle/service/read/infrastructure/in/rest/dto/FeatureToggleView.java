@@ -1,4 +1,4 @@
-package pl.feature.toggle.service.read.infrastructure.in.rest.view;
+package pl.feature.toggle.service.read.infrastructure.in.rest.dto;
 
 public record FeatureToggleView(
         String id,
