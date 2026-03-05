@@ -1,4 +1,4 @@
-package pl.feature.toggle.service.read.infrastructure.in.rest.dto;
+package pl.feature.toggle.service.read.infrastructure.in.rest.sdk.dto;
 
 import pl.feature.toggle.service.model.featuretoggle.FeatureToggleStatus;
 import pl.feature.toggle.service.read.domain.EnvironmentView;

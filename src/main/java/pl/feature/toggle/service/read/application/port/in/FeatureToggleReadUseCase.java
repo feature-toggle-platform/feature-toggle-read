@@ -1,7 +1,7 @@
 package pl.feature.toggle.service.read.application.port.in;
 
 import pl.feature.toggle.service.model.featuretoggle.FeatureToggleId;
-import pl.feature.toggle.service.read.infrastructure.in.rest.dto.FeatureToggleView;
+import pl.feature.toggle.service.read.infrastructure.in.rest.featuretoggle.dto.FeatureToggleView;
 
 import java.util.List;
 

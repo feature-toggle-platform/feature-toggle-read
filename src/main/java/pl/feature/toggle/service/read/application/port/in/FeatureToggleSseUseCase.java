@@ -5,5 +5,5 @@ import pl.feature.toggle.service.model.project.ProjectId;
 
 public interface FeatureToggleSseUseCase {
 
-    void establishSSEConnection(ProjectId projectId, EnvironmentId environmentId);
+    void establish(ProjectId projectId, EnvironmentId environmentId, SseConnection sseConnection);
 }

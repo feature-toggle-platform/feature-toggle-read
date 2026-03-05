@@ -1,4 +1,4 @@
-package pl.feature.toggle.service.read.infrastructure.in.rest;
+package pl.feature.toggle.service.read.infrastructure.in.rest.featuretoggle;
 
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RequestMapping;

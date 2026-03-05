@@ -1,14 +1,19 @@
 package pl.feature.toggle.service.read.infrastructure;
 
 import org.springframework.context.ApplicationEventPublisher;
-import pl.feature.toggle.service.event.processing.api.RevisionProjectionApplier;
-import pl.feature.toggle.service.read.application.port.in.*;
-import pl.feature.toggle.service.read.application.port.out.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import pl.feature.toggle.service.event.processing.api.RevisionProjectionApplier;
+import pl.feature.toggle.service.read.application.handler.FeatureToggleHandlerFacade;
+import pl.feature.toggle.service.read.application.handler.FeatureToggleSseNotifier;
+import pl.feature.toggle.service.read.application.port.in.*;
+import pl.feature.toggle.service.read.application.port.out.*;
+import pl.feature.toggle.service.read.application.port.out.sse.SseClients;
 import pl.feature.toggle.service.read.application.projection.environment.EnvironmentProjectionFacade;
 import pl.feature.toggle.service.read.application.projection.featuretoggle.FeatureToggleProjectionFacade;
 import pl.feature.toggle.service.read.application.projection.project.ProjectProjectionFacade;
+
+import java.time.Clock;
 
 @Configuration("featureToggleReadConfiguration")
 class Config {
@@ -71,5 +76,25 @@ class Config {
         return EnvironmentProjectionFacade.environmentViewConsistency(configurationClient,
                 projectionRepository,
                 queryRepository);
+    }
+
+    @Bean
+    FeatureToggleSseUseCase featureToggleSseUseCase(SseClients sseClients) {
+        return FeatureToggleHandlerFacade.featureToggleSseUseCase(sseClients);
+    }
+
+    @Bean
+    FeatureToggleSdkUseCase featureToggleSdkUseCase(
+            ProjectQueryRepository projectQueryRepository,
+            EnvironmentQueryRepository environmentQueryRepository,
+            FeatureToggleQueryRepository featureToggleQueryRepository
+    ) {
+        return FeatureToggleHandlerFacade.featureToggleSdkUseCase(projectQueryRepository, environmentQueryRepository,
+                featureToggleQueryRepository, Clock.systemUTC());
+    }
+
+    @Bean
+    FeatureToggleSseNotifier featureToggleSseNotifier(SseClients sseClients) {
+        return new FeatureToggleSseNotifier(sseClients);
     }
 }

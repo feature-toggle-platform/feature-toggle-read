@@ -7,7 +7,7 @@ import pl.feature.toggle.service.read.application.port.in.FeatureToggleSdkUseCas
 import pl.feature.toggle.service.read.application.port.out.EnvironmentQueryRepository;
 import pl.feature.toggle.service.read.application.port.out.FeatureToggleQueryRepository;
 import pl.feature.toggle.service.read.application.port.out.ProjectQueryRepository;
-import pl.feature.toggle.service.read.infrastructure.in.rest.dto.FeatureToggleSdkSnapshot;
+import pl.feature.toggle.service.read.infrastructure.in.rest.sdk.dto.FeatureToggleSdkSnapshot;
 
 import java.time.Clock;
 import java.time.Instant;
