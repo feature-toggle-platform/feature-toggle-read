@@ -70,7 +70,7 @@ public class FeatureToggleViewQueryRepositoryStub implements FeatureToggleQueryR
     }
 
     @Override
-    public Optional<FeatureTogglesInEnvironmentQueryModel> findByContext(ProjectId projectId, EnvironmentId environmentId) {
+    public Optional<FeatureTogglesInEnvironmentQueryModel> findByEnvironment(ProjectId projectId, EnvironmentId environmentId) {
         return findByContext.get();
     }
 

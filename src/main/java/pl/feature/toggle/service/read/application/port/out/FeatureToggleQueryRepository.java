@@ -15,7 +15,7 @@ public interface FeatureToggleQueryRepository {
 
     Optional<FeatureToggleView> findConsistent(FeatureToggleId featureToggleId);
 
-    Optional<FeatureTogglesInEnvironmentQueryModel> findByContext(ProjectId projectId, EnvironmentId environmentId);
+    Optional<FeatureTogglesInEnvironmentQueryModel> findByEnvironment(ProjectId projectId, EnvironmentId environmentId);
 
     Optional<FeatureTogglesInProjectQueryModel> findByProject(ProjectId projectId);
 }

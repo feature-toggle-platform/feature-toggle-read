@@ -75,7 +75,7 @@ class FeatureToggleQueryJooqRepository implements FeatureToggleQueryRepository {
     }
 
     @Override
-    public Optional<FeatureTogglesInEnvironmentQueryModel> findByContext(ProjectId projectId, EnvironmentId environmentId) {
+    public Optional<FeatureTogglesInEnvironmentQueryModel> findByEnvironment(ProjectId projectId, EnvironmentId environmentId) {
         var rows = dslContext
                 .select(
                         FEATURE_TOGGLE_VIEW.PROJECT_ID,

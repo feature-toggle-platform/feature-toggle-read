@@ -30,7 +30,7 @@ class FeatureToggleController {
             @PathVariable String projectId,
             @PathVariable String environmentId
     ) {
-        return featureToggleQueryRepository.findByContext(ProjectId.create(projectId), EnvironmentId.create(environmentId))
+        return featureToggleQueryRepository.findByEnvironment(ProjectId.create(projectId), EnvironmentId.create(environmentId))
                 .map(FeatureToggleForEnvironmentView::from)
                 .orElse(null);
     }
