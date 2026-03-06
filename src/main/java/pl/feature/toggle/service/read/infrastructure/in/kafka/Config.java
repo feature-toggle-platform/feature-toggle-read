@@ -21,6 +21,7 @@ import org.springframework.kafka.support.serializer.JacksonJsonSerializer;
 import org.springframework.util.backoff.FixedBackOff;
 import pl.feature.toggle.service.contracts.shared.IntegrationEvent;
 import pl.feature.toggle.service.event.processing.api.EventProcessor;
+import pl.feature.toggle.service.read.application.handler.FeatureToggleSseNotifier;
 import pl.feature.toggle.service.read.application.port.in.EnvironmentProjection;
 import pl.feature.toggle.service.read.application.port.in.FeatureToggleProjection;
 import pl.feature.toggle.service.read.application.port.in.ProjectProjection;
@@ -97,8 +98,9 @@ class Config {
     KafkaEventConsumer kafkaEventConsumer(FeatureToggleProjection featureToggleProjection,
                                           ProjectProjection projectProjection,
                                           EnvironmentProjection environmentProjection,
-                                          EventProcessor eventProcessor) {
-        return new KafkaEventConsumer(featureToggleProjection, projectProjection, environmentProjection, eventProcessor);
+                                          EventProcessor eventProcessor,
+                                          FeatureToggleSseNotifier featureToggleSseNotifier) {
+        return new KafkaEventConsumer(featureToggleProjection, projectProjection, environmentProjection, eventProcessor, featureToggleSseNotifier);
     }
 
 }

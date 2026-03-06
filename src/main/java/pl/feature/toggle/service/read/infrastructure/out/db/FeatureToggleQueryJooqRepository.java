@@ -6,11 +6,14 @@ import pl.feature.toggle.service.model.environment.EnvironmentId;
 import pl.feature.toggle.service.model.featuretoggle.FeatureToggleId;
 import pl.feature.toggle.service.model.project.ProjectId;
 import pl.feature.toggle.service.read.application.port.out.FeatureToggleQueryRepository;
+import pl.feature.toggle.service.read.application.query.FeatureTogglesInEnvironmentQueryModel;
+import pl.feature.toggle.service.read.application.query.FeatureTogglesInProjectQueryModel;
 import pl.feature.toggle.service.read.domain.FeatureToggleView;
 
-import java.util.List;
 import java.util.Optional;
 
+import static pl.feature.ftaas.jooq.Tables.ENVIRONMENT_VIEW;
+import static pl.feature.ftaas.jooq.Tables.PROJECT_VIEW;
 import static pl.feature.ftaas.jooq.tables.FeatureToggleView.FEATURE_TOGGLE_VIEW;
 
 @AllArgsConstructor
@@ -36,11 +39,75 @@ class FeatureToggleQueryJooqRepository implements FeatureToggleQueryRepository {
     }
 
     @Override
-    public List<FeatureToggleView> findByContext(ProjectId projectId, EnvironmentId environmentId) {
-        return dslContext.selectFrom(FEATURE_TOGGLE_VIEW)
+    public Optional<FeatureTogglesInProjectQueryModel> findByProject(ProjectId projectId) {
+        var rows = dslContext
+                .select(
+                        FEATURE_TOGGLE_VIEW.PROJECT_ID,
+                        PROJECT_VIEW.NAME,
+                        FEATURE_TOGGLE_VIEW.ENVIRONMENT_ID,
+                        ENVIRONMENT_VIEW.NAME,
+                        ENVIRONMENT_VIEW.REVISION,
+                        ENVIRONMENT_VIEW.UPDATED_AT,
+                        ENVIRONMENT_VIEW.CONSISTENT,
+                        FEATURE_TOGGLE_VIEW.ID,
+                        FEATURE_TOGGLE_VIEW.NAME,
+                        FEATURE_TOGGLE_VIEW.DESCRIPTION,
+                        FEATURE_TOGGLE_VIEW.TYPE,
+                        FEATURE_TOGGLE_VIEW.CURRENT_VALUE,
+                        FEATURE_TOGGLE_VIEW.STATUS,
+                        FEATURE_TOGGLE_VIEW.UPDATED_AT,
+                        FEATURE_TOGGLE_VIEW.CONSISTENT
+                )
+                .from(FEATURE_TOGGLE_VIEW)
+                .join(PROJECT_VIEW)
+                .on(PROJECT_VIEW.ID.eq(FEATURE_TOGGLE_VIEW.PROJECT_ID))
+                .join(ENVIRONMENT_VIEW)
+                .on(ENVIRONMENT_VIEW.ID.eq(FEATURE_TOGGLE_VIEW.ENVIRONMENT_ID))
+                .where(FEATURE_TOGGLE_VIEW.PROJECT_ID.eq(projectId.uuid()))
+                .orderBy(ENVIRONMENT_VIEW.NAME.asc(), FEATURE_TOGGLE_VIEW.NAME.asc())
+                .fetch(Mapper::toFeatureToggleQueryRow);
+
+        if (rows.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(Mapper.toProjectQueryModel(rows));
+    }
+
+    @Override
+    public Optional<FeatureTogglesInEnvironmentQueryModel> findByContext(ProjectId projectId, EnvironmentId environmentId) {
+        var rows = dslContext
+                .select(
+                        FEATURE_TOGGLE_VIEW.PROJECT_ID,
+                        PROJECT_VIEW.NAME,
+                        FEATURE_TOGGLE_VIEW.ENVIRONMENT_ID,
+                        ENVIRONMENT_VIEW.NAME,
+                        ENVIRONMENT_VIEW.REVISION,
+                        ENVIRONMENT_VIEW.UPDATED_AT,
+                        ENVIRONMENT_VIEW.CONSISTENT,
+                        FEATURE_TOGGLE_VIEW.ID,
+                        FEATURE_TOGGLE_VIEW.NAME,
+                        FEATURE_TOGGLE_VIEW.DESCRIPTION,
+                        FEATURE_TOGGLE_VIEW.TYPE,
+                        FEATURE_TOGGLE_VIEW.CURRENT_VALUE,
+                        FEATURE_TOGGLE_VIEW.STATUS,
+                        FEATURE_TOGGLE_VIEW.UPDATED_AT,
+                        FEATURE_TOGGLE_VIEW.CONSISTENT
+                )
+                .from(FEATURE_TOGGLE_VIEW)
+                .join(PROJECT_VIEW)
+                .on(PROJECT_VIEW.ID.eq(FEATURE_TOGGLE_VIEW.PROJECT_ID))
+                .join(ENVIRONMENT_VIEW)
+                .on(ENVIRONMENT_VIEW.ID.eq(FEATURE_TOGGLE_VIEW.ENVIRONMENT_ID))
                 .where(FEATURE_TOGGLE_VIEW.PROJECT_ID.eq(projectId.uuid()))
                 .and(FEATURE_TOGGLE_VIEW.ENVIRONMENT_ID.eq(environmentId.uuid()))
-                .fetch()
-                .map(Mapper::toView);
+                .orderBy(FEATURE_TOGGLE_VIEW.NAME.asc())
+                .fetch(Mapper::toFeatureToggleQueryRow);
+
+        if (rows.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(Mapper.toEnvironmentQueryModel(rows));
     }
 }

@@ -3,9 +3,10 @@ package pl.feature.toggle.service.read.application.port.out;
 import pl.feature.toggle.service.model.environment.EnvironmentId;
 import pl.feature.toggle.service.model.featuretoggle.FeatureToggleId;
 import pl.feature.toggle.service.model.project.ProjectId;
+import pl.feature.toggle.service.read.application.query.FeatureTogglesInEnvironmentQueryModel;
+import pl.feature.toggle.service.read.application.query.FeatureTogglesInProjectQueryModel;
 import pl.feature.toggle.service.read.domain.FeatureToggleView;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface FeatureToggleQueryRepository {
@@ -14,5 +15,7 @@ public interface FeatureToggleQueryRepository {
 
     Optional<FeatureToggleView> findConsistent(FeatureToggleId featureToggleId);
 
-    List<FeatureToggleView> findByContext(ProjectId projectId, EnvironmentId environmentId);
+    Optional<FeatureTogglesInEnvironmentQueryModel> findByContext(ProjectId projectId, EnvironmentId environmentId);
+
+    Optional<FeatureTogglesInProjectQueryModel> findByProject(ProjectId projectId);
 }

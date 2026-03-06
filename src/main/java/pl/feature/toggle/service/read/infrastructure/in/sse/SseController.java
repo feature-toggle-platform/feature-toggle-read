@@ -1,4 +1,4 @@
-package pl.feature.toggle.service.read.infrastructure.in.rest.sse;
+package pl.feature.toggle.service.read.infrastructure.in.sse;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
