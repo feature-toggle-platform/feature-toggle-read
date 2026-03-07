@@ -20,11 +20,11 @@ public class FeatureToggleViewQueryRepositoryStub implements FeatureToggleQueryR
             forMethod("find(FeatureToggleId)");
     private final StubSupport<Optional<FeatureToggleView>> findConsistent =
             forMethod("findConsistent(FeatureToggleId)");
-    private final StubSupport<List<FeatureTogglesInProjectQueryModel>> findByContext =
-            forMethod("findByContext(ProjectId, EnvironmentId)");
 
-    private final StubSupport<List<ProjectFeatureToggleQueryModel>> findByProject =
-            forMethod("findByContext(ProjectId)");
+    private final StubSupport<FeatureTogglesInProjectQueryModel> findByProject =
+            forMethod("findByProject(ProjectId)");
+    private final StubSupport<FeatureTogglesInEnvironmentQueryModel> findByEnvironment =
+            forMethod("findByEnvironment(ProjectId, EnvironmentId)");
 
 
     public void findReturns(FeatureToggleView value) {
@@ -43,11 +43,11 @@ public class FeatureToggleViewQueryRepositoryStub implements FeatureToggleQueryR
         findConsistent.willThrow(ex);
     }
 
-    public void findByContextReturns(List<FeatureTogglesInProjectQueryModel> value) {
-        findByContext.willReturn(value);
+    public void findByEnvironmentReturns(FeatureTogglesInEnvironmentQueryModel value) {
+        findByEnvironment.willReturn(value);
     }
 
-    public void findByProjectReturns(List<ProjectFeatureToggleQueryModel> value) {
+    public void findByProjectReturns(FeatureTogglesInProjectQueryModel value) {
         findByProject.willReturn(value);
     }
 
@@ -55,8 +55,8 @@ public class FeatureToggleViewQueryRepositoryStub implements FeatureToggleQueryR
         findByProject.willThrow(ex);
     }
 
-    public void findByContextThrows(RuntimeException ex) {
-        findByContext.willThrow(ex);
+    public void findByEnvironmentThrows(RuntimeException ex) {
+        findByEnvironment.willThrow(ex);
     }
 
     @Override
@@ -70,20 +70,25 @@ public class FeatureToggleViewQueryRepositoryStub implements FeatureToggleQueryR
     }
 
     @Override
+    public List<FeatureToggleView> find(ProjectId projectId, EnvironmentId environmentId) {
+        return List.of();
+    }
+
+    @Override
     public Optional<FeatureTogglesInEnvironmentQueryModel> findByEnvironment(ProjectId projectId, EnvironmentId environmentId) {
-        return findByContext.get();
+        return Optional.ofNullable(findByEnvironment.get());
     }
 
     @Override
     public Optional<FeatureTogglesInProjectQueryModel> findByProject(ProjectId projectId) {
-        return findByProject.get();
+        return Optional.ofNullable(findByProject.get());
     }
 
 
     public void reset() {
         find.reset();
         findConsistent.reset();
-        findByContext.reset();
+        findByProject.reset();
         findByProject.reset();
     }
 }

@@ -7,6 +7,7 @@ import pl.feature.toggle.service.read.application.query.FeatureTogglesInEnvironm
 import pl.feature.toggle.service.read.application.query.FeatureTogglesInProjectQueryModel;
 import pl.feature.toggle.service.read.domain.FeatureToggleView;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface FeatureToggleQueryRepository {
@@ -14,6 +15,8 @@ public interface FeatureToggleQueryRepository {
     Optional<FeatureToggleView> find(FeatureToggleId featureToggleId);
 
     Optional<FeatureToggleView> findConsistent(FeatureToggleId featureToggleId);
+
+    List<FeatureToggleView> find(ProjectId projectId, EnvironmentId environmentId);
 
     Optional<FeatureTogglesInEnvironmentQueryModel> findByEnvironment(ProjectId projectId, EnvironmentId environmentId);
 

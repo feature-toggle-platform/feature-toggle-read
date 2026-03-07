@@ -16,13 +16,12 @@ import java.util.function.Consumer;
 class SpringSseConnection implements SseConnection {
 
     private static final long NO_TIMEOUT = 0L;
-    private static final long HEARTBEAT_INTERVAL_SECONDS = 15L;
     private static final ScheduledExecutorService HEARTBEAT_EXECUTOR = Executors.newScheduledThreadPool(1);
 
     private final SseEmitter sseEmitter;
     private final ScheduledFuture<?> heartbeatTask;
 
-    static SpringSseConnection create() {
+    static SpringSseConnection create(Long heartbeatIntervalSeconds) {
         var emitter = new SseEmitter(NO_TIMEOUT);
         var heartbeatTask = HEARTBEAT_EXECUTOR.scheduleAtFixedRate(() -> {
             try {
@@ -30,7 +29,7 @@ class SpringSseConnection implements SseConnection {
             } catch (Exception ignored) {
                 emitter.complete();
             }
-        }, HEARTBEAT_INTERVAL_SECONDS, HEARTBEAT_INTERVAL_SECONDS, TimeUnit.SECONDS);
+        }, heartbeatIntervalSeconds, heartbeatIntervalSeconds, TimeUnit.SECONDS);
 
         emitter.onCompletion(() -> heartbeatTask.cancel(true));
         emitter.onTimeout(() -> heartbeatTask.cancel(true));

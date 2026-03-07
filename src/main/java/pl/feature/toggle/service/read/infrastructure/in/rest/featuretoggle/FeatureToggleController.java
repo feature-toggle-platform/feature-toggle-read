@@ -13,7 +13,7 @@ import pl.feature.toggle.service.read.infrastructure.in.rest.featuretoggle.dto.F
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/rest/api/feature-toggles/read")
+@RequestMapping("/rest/api/read")
 class FeatureToggleController {
 
     private final FeatureToggleQueryRepository featureToggleQueryRepository;

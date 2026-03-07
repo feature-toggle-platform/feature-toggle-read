@@ -28,7 +28,7 @@ class FeatureToggleSdkHandler implements FeatureToggleSdkUseCase {
         var environmentView = environmentQueryRepository.find(projectId, environmentId)
                 .orElseThrow(() -> new IllegalStateException("Environment not found: " + environmentId));
 
-        var featureToggleViews = featureToggleQueryRepository.findByEnvironment(projectId, environmentId);
+        var featureToggleViews = featureToggleQueryRepository.find(projectId, environmentId);
 
         var scope = FeatureToggleSdkSnapshot.createScope(projectView, environmentView);
         var status = FeatureToggleSdkSnapshot.createStatus(projectView, environmentView);
@@ -38,7 +38,8 @@ class FeatureToggleSdkHandler implements FeatureToggleSdkUseCase {
                 status,
                 environmentView.revision().value(),
                 Instant.now(clock),
-                featureToggleViews.stream()
+                featureToggleViews
+                        .stream()
                         .map(FeatureToggleSdkSnapshot::createToggle)
                         .toList()
         );

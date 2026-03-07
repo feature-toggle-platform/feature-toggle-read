@@ -16,6 +16,8 @@ import pl.feature.toggle.service.read.application.port.in.FeatureToggleSseUseCas
 @RequestMapping("/rest/api/sdk")
 class SseController {
 
+    private static final Long HEARTBEAT_INTERVAL_IN_S = 15L;
+
     private final FeatureToggleSseUseCase sseUseCase;
 
     @GetMapping(
@@ -23,7 +25,7 @@ class SseController {
             produces = MediaType.TEXT_EVENT_STREAM_VALUE
     )
     public SseEmitter establishSSEConnection(@PathVariable String projectId, @PathVariable String environmentId) {
-        var sseConnection = SpringSseConnection.create();
+        var sseConnection = SpringSseConnection.create(HEARTBEAT_INTERVAL_IN_S);
         sseUseCase.establish(ProjectId.create(projectId), EnvironmentId.create(environmentId), sseConnection);
         return sseConnection.sseEmitter();
     }
