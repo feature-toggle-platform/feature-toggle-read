@@ -17,6 +17,6 @@ public record SseEvent(
     }
 
     public static SseEvent rebuildRequired(long revision) {
-        return new SseEvent(REBUILD_REQUIRED_EVENT_KEY, revision);
+        return new SseEvent(REBUILD_REQUIRED_EVENT_KEY, SseRebuildRequiredEvent.create(revision));
     }
 }
