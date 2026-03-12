@@ -5,6 +5,7 @@ import pl.feature.toggle.service.read.StubSupport;
 import pl.feature.toggle.service.read.application.port.out.ProjectQueryRepository;
 import pl.feature.toggle.service.read.domain.ProjectView;
 
+import java.util.List;
 import java.util.Optional;
 
 import static pl.feature.toggle.service.read.StubSupport.forMethod;
@@ -14,6 +15,7 @@ public class ProjectViewQueryRepositoryStub implements ProjectQueryRepository {
 
     private final StubSupport<Optional<ProjectView>> find = forMethod("find(ProjectId)");
     private final StubSupport<Optional<ProjectView>> findConsistent = forMethod("findConsistent(ProjectId)");
+    private final StubSupport<List<ProjectView>> findAll = forMethod("findAll()");
 
     public void findReturns(ProjectView value) {
         find.willReturn(Optional.ofNullable(value));
@@ -31,9 +33,18 @@ public class ProjectViewQueryRepositoryStub implements ProjectQueryRepository {
         findConsistent.willThrow(ex);
     }
 
+    public void findAllReturns(List<ProjectView> views) {
+        findAll.willReturn(views);
+    }
+
+    public void findAllThrows(RuntimeException ex) {
+        findAll.willThrow(ex);
+    }
+
     public void reset() {
         find.reset();
         findConsistent.reset();
+        findAll.reset();
     }
 
     @Override
@@ -44,6 +55,11 @@ public class ProjectViewQueryRepositoryStub implements ProjectQueryRepository {
     @Override
     public Optional<ProjectView> findConsistent(ProjectId projectId) {
         return findConsistent.get();
+    }
+
+    @Override
+    public List<ProjectView> findAll() {
+        return findAll.get();
     }
 
 

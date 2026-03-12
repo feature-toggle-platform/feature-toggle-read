@@ -7,6 +7,7 @@ import pl.feature.toggle.service.model.project.ProjectId;
 import pl.feature.toggle.service.read.application.port.out.EnvironmentQueryRepository;
 import pl.feature.toggle.service.read.domain.EnvironmentView;
 
+import java.util.List;
 import java.util.Optional;
 
 import static pl.feature.ftaas.jooq.tables.EnvironmentView.ENVIRONMENT_VIEW;
@@ -32,6 +33,15 @@ class EnvironmentQueryJooqRepository implements EnvironmentQueryRepository {
                 .and(ENVIRONMENT_VIEW.CONSISTENT.eq(true))
                 .and(ENVIRONMENT_VIEW.PROJECT_ID.eq(projectId.uuid()))
                 .fetchOptional()
+                .map(Mapper::toView);
+    }
+
+    @Override
+    public List<EnvironmentView> findByProjectId(ProjectId projectId) {
+        return dslContext.selectFrom(ENVIRONMENT_VIEW)
+                .where(ENVIRONMENT_VIEW.CONSISTENT.eq(true))
+                .and(ENVIRONMENT_VIEW.PROJECT_ID.eq(projectId.uuid()))
+                .fetch()
                 .map(Mapper::toView);
     }
 }

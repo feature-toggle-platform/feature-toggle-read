@@ -2,6 +2,7 @@ package pl.feature.toggle.service.read.application.projection.featuretoggle;
 
 import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.transaction.annotation.Transactional;
 import pl.feature.toggle.service.contracts.event.featuretoggle.FeatureToggleCreated;
 import pl.feature.toggle.service.contracts.event.featuretoggle.FeatureToggleStatusChanged;
 import pl.feature.toggle.service.contracts.event.featuretoggle.FeatureToggleUpdated;
@@ -28,11 +29,13 @@ class FeatureToggleProjectionHandler implements FeatureToggleProjection {
     private final ApplicationEventPublisher eventPublisher;
 
     @Override
+    @Transactional
     public void handle(FeatureToggleCreated event) {
         applyCreate(event);
     }
 
     @Override
+    @Transactional
     public void handle(FeatureToggleUpdated event) {
         var incoming = Revision.from(event.revision());
         var featureToggleId = FeatureToggleId.create(event.id());
@@ -45,6 +48,7 @@ class FeatureToggleProjectionHandler implements FeatureToggleProjection {
     }
 
     @Override
+    @Transactional
     public void handle(FeatureToggleValueChanged event) {
         var incoming = Revision.from(event.revision());
         var featureToggleId = FeatureToggleId.create(event.id());
@@ -57,6 +61,7 @@ class FeatureToggleProjectionHandler implements FeatureToggleProjection {
     }
 
     @Override
+    @Transactional
     public void handle(FeatureToggleStatusChanged event) {
         var incoming = Revision.from(event.revision());
         var featureToggleId = FeatureToggleId.create(event.id());

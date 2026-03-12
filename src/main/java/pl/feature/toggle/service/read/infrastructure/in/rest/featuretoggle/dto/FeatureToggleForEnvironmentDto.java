@@ -6,13 +6,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-public record FeatureToggleForEnvironmentView(
+public record FeatureToggleForEnvironmentDto(
         ProjectData project,
         EnvironmentData environment
 ) {
 
-    public static FeatureToggleForEnvironmentView from(FeatureTogglesInEnvironmentQueryModel queryModel) {
-        return new FeatureToggleForEnvironmentView(
+    public static FeatureToggleForEnvironmentDto from(FeatureTogglesInEnvironmentQueryModel queryModel) {
+        return new FeatureToggleForEnvironmentDto(
                 new ProjectData(
                         queryModel.projectData().projectId(),
                         queryModel.projectData().projectName()

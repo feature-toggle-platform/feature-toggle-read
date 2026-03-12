@@ -6,6 +6,7 @@ import pl.feature.toggle.service.read.StubSupport;
 import pl.feature.toggle.service.read.application.port.out.EnvironmentQueryRepository;
 import pl.feature.toggle.service.read.domain.EnvironmentView;
 
+import java.util.List;
 import java.util.Optional;
 
 import static pl.feature.toggle.service.read.StubSupport.forMethod;
@@ -16,6 +17,8 @@ public class EnvironmentViewQueryRepositoryStub implements EnvironmentQueryRepos
             forMethod("find(ProjectId, EnvironmentId)");
     private final StubSupport<Optional<EnvironmentView>> findConsistent =
             forMethod("findConsistent(ProjectId, EnvironmentId)");
+    private final StubSupport<List<EnvironmentView>> findByProjectId =
+            forMethod("findByProjectId(ProjectId)");
 
     public void findReturns(EnvironmentView value) {
         find.willReturn(Optional.ofNullable(value));
@@ -33,6 +36,14 @@ public class EnvironmentViewQueryRepositoryStub implements EnvironmentQueryRepos
         findConsistent.willThrow(ex);
     }
 
+    public void findByProjectId(List<EnvironmentView> views) {
+        findByProjectId.willReturn(views);
+    }
+
+    public void findByProjectIdThrows(RuntimeException ex) {
+        findByProjectId.willThrow(ex);
+    }
+
     @Override
     public Optional<EnvironmentView> find(ProjectId projectId, EnvironmentId environmentId) {
         return find.get();
@@ -43,8 +54,14 @@ public class EnvironmentViewQueryRepositoryStub implements EnvironmentQueryRepos
         return findConsistent.get();
     }
 
+    @Override
+    public List<EnvironmentView> findByProjectId(ProjectId projectId) {
+        return findByProjectId.get();
+    }
+
     public void reset() {
         find.reset();
+        findByProjectId.reset();
         findConsistent.reset();
     }
 }

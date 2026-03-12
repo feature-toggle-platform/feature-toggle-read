@@ -6,6 +6,7 @@ import pl.feature.toggle.service.model.project.ProjectId;
 import pl.feature.toggle.service.read.application.port.out.ProjectQueryRepository;
 import pl.feature.toggle.service.read.domain.ProjectView;
 
+import java.util.List;
 import java.util.Optional;
 
 import static pl.feature.ftaas.jooq.tables.ProjectView.PROJECT_VIEW;
@@ -29,6 +30,14 @@ class ProjectQueryJooqRepository implements ProjectQueryRepository {
                 .where(PROJECT_VIEW.ID.eq(projectId.uuid()))
                 .and(PROJECT_VIEW.CONSISTENT.eq(true))
                 .fetchOptional()
+                .map(Mapper::toView);
+    }
+
+    @Override
+    public List<ProjectView> findAll() {
+        return dslContext.selectFrom(PROJECT_VIEW)
+                .where(PROJECT_VIEW.CONSISTENT.eq(true))
+                .fetch()
                 .map(Mapper::toView);
     }
 }

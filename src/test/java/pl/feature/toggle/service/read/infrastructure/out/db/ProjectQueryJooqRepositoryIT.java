@@ -83,6 +83,27 @@ class ProjectQueryJooqRepositoryIT extends AbstractITTest {
         assertThat(inconsistent).isEmpty();
     }
 
+    @Test
+    void should_find_projects(){
+        // given
+        var projectId = ProjectId.create();
+        var expectedProjectView = fakeProjectViewBuilder()
+                .id(projectId)
+                .name("My Project")
+                .status(ProjectStatus.ACTIVE)
+                .revision(Revision.from(7))
+                .consistent(true)
+                .build();
+        insertProjectView(expectedProjectView);
+
+        // when
+        var actual = sut.findAll();
+
+        // then
+        assertThat(actual).hasSize(1);
+        assertThat(actual.getFirst()).isEqualTo(expectedProjectView);
+    }
+
     private void insertProjectView(ProjectView projectView) {
         projectionRepository.insert(projectView);
     }

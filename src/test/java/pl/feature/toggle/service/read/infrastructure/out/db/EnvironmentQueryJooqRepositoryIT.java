@@ -128,6 +128,32 @@ class EnvironmentQueryJooqRepositoryIT extends AbstractITTest {
         assertThat(sut.findConsistent(projectId, inconsistentEnv)).isEmpty();
     }
 
+    @Test
+    void should_find_environments_by_project_id() {
+        // given
+        var projectId = ProjectId.create();
+        var environmentId = EnvironmentId.create();
+        var projectView = fakeProjectViewBuilder()
+                .id(projectId)
+                .build();
+        insertProjectView(projectView);
+        var environmentView = fakeEnvironmentViewBuilder()
+                .projectId(projectId)
+                .id(environmentId)
+                .consistent(true)
+                .revision(Revision.from(1))
+                .build();
+
+        insertEnvironmentView(environmentView);
+
+        // when
+        var result = sut.findByProjectId(projectId);
+
+        // then
+        assertThat(result).hasSize(1);
+        assertThat(result.getFirst()).isEqualTo(environmentView);
+    }
+
     private void insertEnvironmentView(EnvironmentView environmentView) {
         projectionRepository.insert(environmentView);
     }

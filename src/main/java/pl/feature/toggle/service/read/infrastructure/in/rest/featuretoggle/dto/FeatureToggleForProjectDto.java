@@ -6,12 +6,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-public record FeatureToggleForProjectView(
+public record FeatureToggleForProjectDto(
         ProjectData projects
 ) {
 
-    public static FeatureToggleForProjectView from(FeatureTogglesInProjectQueryModel queryModel) {
-        return new FeatureToggleForProjectView(
+    public static FeatureToggleForProjectDto from(FeatureTogglesInProjectQueryModel queryModel) {
+        return new FeatureToggleForProjectDto(
                 new ProjectData(
                         queryModel.projectData().projectId(),
                         queryModel.projectData().projectName(),
