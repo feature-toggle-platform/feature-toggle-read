@@ -35,20 +35,19 @@ final class InMemorySseClients implements SseClients {
     }
 
     @Override
-    public void broadcast(SseScope broadcastScope, SseEvent event) {
-        for (var targetScope : matchingScopes(broadcastScope)) {
-            sendToScope(targetScope, event);
+    public void broadcast(SseScope scope, SseEvent event) {
+        if (scope.isAllScope()) {
+            sendToAll(event);
+            return;
         }
+
+        sendToScope(scope, event);
     }
 
-    private Iterable<SseScope> matchingScopes(SseScope broadcastScope) {
-        if (broadcastScope.isAllScope()) {
-            return clientsByScope.keySet();
+    private void sendToAll(SseEvent event) {
+        for (var scope : clientsByScope.keySet()) {
+            sendToScope(scope, event);
         }
-
-        return clientsByScope.keySet().stream()
-                .filter(clientScope -> matches(broadcastScope, clientScope))
-                .toList();
     }
 
     private void sendToScope(SseScope scope, SseEvent event) {
@@ -67,22 +66,14 @@ final class InMemorySseClients implements SseClients {
         }
     }
 
-    private boolean matches(SseScope broadcastScope, SseScope clientScope) {
-        if (broadcastScope.isAllScope()) {
-            return true;
-        }
-        if (broadcastScope.isProjectScope()) {
-            return broadcastScope.projectId().equals(clientScope.projectId());
-        }
-        return broadcastScope.equals(clientScope);
-    }
-
     private void unregister(SseScope scope, Client client) {
         var clients = clientsByScope.get(scope);
         if (clients == null) {
             return;
         }
+
         clients.remove(client);
+
         if (clients.isEmpty()) {
             clientsByScope.remove(scope, clients);
         }
@@ -92,6 +83,5 @@ final class InMemorySseClients implements SseClients {
             UUID id,
             SseConnection connection
     ) {
-
     }
 }

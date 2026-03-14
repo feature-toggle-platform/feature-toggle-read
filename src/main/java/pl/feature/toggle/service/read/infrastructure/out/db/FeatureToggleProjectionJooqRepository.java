@@ -20,7 +20,6 @@ class FeatureToggleProjectionJooqRepository implements FeatureToggleProjectionRe
                 .set(FEATURE_TOGGLE_VIEW.STATUS, view.status().name())
                 .set(FEATURE_TOGGLE_VIEW.REVISION, view.revision().value())
                 .set(FEATURE_TOGGLE_VIEW.CONSISTENT, view.consistent())
-                .set(FEATURE_TOGGLE_VIEW.PROJECT_ID, view.projectId().uuid())
                 .set(FEATURE_TOGGLE_VIEW.ENVIRONMENT_ID, view.environmentId().uuid())
                 .set(FEATURE_TOGGLE_VIEW.CREATED_AT, view.createdAt().toLocalDateTime())
                 .set(FEATURE_TOGGLE_VIEW.UPDATED_AT, view.updatedAt().toLocalDateTime())
@@ -66,7 +65,6 @@ class FeatureToggleProjectionJooqRepository implements FeatureToggleProjectionRe
     public void upsert(FeatureToggleView view) {
         dslContext.insertInto(FEATURE_TOGGLE_VIEW)
                 .set(FEATURE_TOGGLE_VIEW.ID, view.id().uuid())
-                .set(FEATURE_TOGGLE_VIEW.PROJECT_ID, view.projectId().uuid())
                 .set(FEATURE_TOGGLE_VIEW.ENVIRONMENT_ID, view.environmentId().uuid())
                 .set(FEATURE_TOGGLE_VIEW.NAME, view.name().value())
                 .set(FEATURE_TOGGLE_VIEW.DESCRIPTION, view.description().value())
@@ -79,7 +77,6 @@ class FeatureToggleProjectionJooqRepository implements FeatureToggleProjectionRe
                 .set(FEATURE_TOGGLE_VIEW.CONSISTENT, view.consistent())
                 .onConflict(FEATURE_TOGGLE_VIEW.ID)
                 .doUpdate()
-                .set(FEATURE_TOGGLE_VIEW.PROJECT_ID, view.projectId().uuid())
                 .set(FEATURE_TOGGLE_VIEW.ENVIRONMENT_ID, view.environmentId().uuid())
                 .set(FEATURE_TOGGLE_VIEW.NAME, view.name().value())
                 .set(FEATURE_TOGGLE_VIEW.DESCRIPTION, view.description().value())

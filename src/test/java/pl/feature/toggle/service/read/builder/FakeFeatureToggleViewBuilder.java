@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 public class FakeFeatureToggleViewBuilder {
 
     private FeatureToggleId id;
-    private ProjectId projectId;
     private EnvironmentId environmentId;
     private FeatureToggleName name;
     private FeatureToggleDescription description;
@@ -31,7 +30,6 @@ public class FakeFeatureToggleViewBuilder {
 
     private FakeFeatureToggleViewBuilder() {
         id = FeatureToggleId.create();
-        projectId = ProjectId.create();
         environmentId = EnvironmentId.create();
         name = FeatureToggleName.create("toggle-name");
         description = FeatureToggleDescription.create("description");
@@ -49,11 +47,6 @@ public class FakeFeatureToggleViewBuilder {
 
     public FakeFeatureToggleViewBuilder id(FeatureToggleId id) {
         this.id = id;
-        return this;
-    }
-
-    public FakeFeatureToggleViewBuilder projectId(ProjectId projectId) {
-        this.projectId = projectId;
         return this;
     }
 
@@ -125,7 +118,6 @@ public class FakeFeatureToggleViewBuilder {
     public FeatureToggleView build() {
         return new FeatureToggleView(
                 id,
-                projectId,
                 environmentId,
                 name,
                 description,

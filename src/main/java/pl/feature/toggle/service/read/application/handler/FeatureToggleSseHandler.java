@@ -16,7 +16,7 @@ class FeatureToggleSseHandler implements FeatureToggleSseUseCase {
 
     @Override
     public void establish(ProjectId projectId, EnvironmentId environmentId, SseConnection sseConnection) {
-        var scope = SseScope.environmentScope(projectId, environmentId);
+        var scope = SseScope.resolveScope(projectId, environmentId);
         var subscription = sseClients.register(scope, sseConnection);
         sseConnection.onClose(subscription::unsubscribe);
         sseConnection.onError(ex -> subscription.unsubscribe());

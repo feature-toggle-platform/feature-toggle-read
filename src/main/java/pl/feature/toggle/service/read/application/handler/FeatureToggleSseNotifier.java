@@ -12,13 +12,13 @@ public final class FeatureToggleSseNotifier {
 
     private final SseClients sseClients;
 
-    public void rebuildRequired(UUID projectId, UUID environmentId, long revision) {
-        var sseScope = SseScope.environmentScope(projectId, environmentId);
+    public void rebuildRequiredForEnvironment(UUID environmentId, long revision) {
+        var sseScope = SseScope.environmentScope(environmentId);
         var sseEvent = SseEvent.rebuildRequired(revision);
         sseClients.broadcast(sseScope, sseEvent);
     }
 
-    public void rebuildRequired(UUID projectId, long revision) {
+    public void rebuildRequiredForProject(UUID projectId, long revision) {
         var sseScope = SseScope.projectScope(projectId);
         var sseEvent = SseEvent.rebuildRequired(revision);
         sseClients.broadcast(sseScope, sseEvent);

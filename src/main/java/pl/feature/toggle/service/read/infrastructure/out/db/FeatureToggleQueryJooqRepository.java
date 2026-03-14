@@ -41,10 +41,13 @@ class FeatureToggleQueryJooqRepository implements FeatureToggleQueryRepository {
 
     @Override
     public List<FeatureToggleView> find(ProjectId projectId, EnvironmentId environmentId) {
-        return dslContext.selectFrom(FEATURE_TOGGLE_VIEW)
-                .where(FEATURE_TOGGLE_VIEW.PROJECT_ID.eq(projectId.uuid()))
-                .and(FEATURE_TOGGLE_VIEW.ENVIRONMENT_ID.eq(environmentId.uuid()))
-                .fetch()
+        return dslContext.select(FEATURE_TOGGLE_VIEW.fields())
+                .from(FEATURE_TOGGLE_VIEW)
+                .join(ENVIRONMENT_VIEW)
+                .on(ENVIRONMENT_VIEW.ID.eq(FEATURE_TOGGLE_VIEW.ENVIRONMENT_ID))
+                .where(FEATURE_TOGGLE_VIEW.ENVIRONMENT_ID.eq(environmentId.uuid()))
+                .and(ENVIRONMENT_VIEW.PROJECT_ID.eq(projectId.uuid()))
+                .fetchInto(FEATURE_TOGGLE_VIEW)
                 .map(Mapper::toView);
     }
 
@@ -52,7 +55,7 @@ class FeatureToggleQueryJooqRepository implements FeatureToggleQueryRepository {
     public Optional<FeatureTogglesInProjectQueryModel> findByProject(ProjectId projectId) {
         var rows = dslContext
                 .select(
-                        FEATURE_TOGGLE_VIEW.PROJECT_ID,
+                        PROJECT_VIEW.ID,
                         PROJECT_VIEW.NAME,
                         FEATURE_TOGGLE_VIEW.ENVIRONMENT_ID,
                         ENVIRONMENT_VIEW.NAME,
@@ -69,11 +72,11 @@ class FeatureToggleQueryJooqRepository implements FeatureToggleQueryRepository {
                         FEATURE_TOGGLE_VIEW.CONSISTENT
                 )
                 .from(FEATURE_TOGGLE_VIEW)
-                .join(PROJECT_VIEW)
-                .on(PROJECT_VIEW.ID.eq(FEATURE_TOGGLE_VIEW.PROJECT_ID))
                 .join(ENVIRONMENT_VIEW)
                 .on(ENVIRONMENT_VIEW.ID.eq(FEATURE_TOGGLE_VIEW.ENVIRONMENT_ID))
-                .where(FEATURE_TOGGLE_VIEW.PROJECT_ID.eq(projectId.uuid()))
+                .join(PROJECT_VIEW)
+                .on(PROJECT_VIEW.ID.eq(ENVIRONMENT_VIEW.PROJECT_ID))
+                .where(ENVIRONMENT_VIEW.PROJECT_ID.eq(projectId.uuid()))
                 .orderBy(ENVIRONMENT_VIEW.NAME.asc(), FEATURE_TOGGLE_VIEW.NAME.asc())
                 .fetch(Mapper::toFeatureToggleQueryRow);
 
@@ -88,7 +91,7 @@ class FeatureToggleQueryJooqRepository implements FeatureToggleQueryRepository {
     public Optional<FeatureTogglesInEnvironmentQueryModel> findByEnvironment(ProjectId projectId, EnvironmentId environmentId) {
         var rows = dslContext
                 .select(
-                        FEATURE_TOGGLE_VIEW.PROJECT_ID,
+                        PROJECT_VIEW.ID,
                         PROJECT_VIEW.NAME,
                         FEATURE_TOGGLE_VIEW.ENVIRONMENT_ID,
                         ENVIRONMENT_VIEW.NAME,
@@ -105,12 +108,13 @@ class FeatureToggleQueryJooqRepository implements FeatureToggleQueryRepository {
                         FEATURE_TOGGLE_VIEW.CONSISTENT
                 )
                 .from(FEATURE_TOGGLE_VIEW)
-                .join(PROJECT_VIEW)
-                .on(PROJECT_VIEW.ID.eq(FEATURE_TOGGLE_VIEW.PROJECT_ID))
                 .join(ENVIRONMENT_VIEW)
                 .on(ENVIRONMENT_VIEW.ID.eq(FEATURE_TOGGLE_VIEW.ENVIRONMENT_ID))
-                .where(FEATURE_TOGGLE_VIEW.PROJECT_ID.eq(projectId.uuid()))
+                .join(PROJECT_VIEW)
+                .on(PROJECT_VIEW.ID.eq(ENVIRONMENT_VIEW.PROJECT_ID))
+                .where(ENVIRONMENT_VIEW.ID.eq(environmentId.uuid()))
                 .and(FEATURE_TOGGLE_VIEW.ENVIRONMENT_ID.eq(environmentId.uuid()))
+                .and(PROJECT_VIEW.ID.eq(projectId.uuid()))
                 .orderBy(FEATURE_TOGGLE_VIEW.NAME.asc())
                 .fetch(Mapper::toFeatureToggleQueryRow);
 

@@ -19,15 +19,14 @@ class FeatureToggleSseNotifierTest {
     @Test
     void should_broadcast_rebuild_required_for_environment_scope() {
         // given
-        var projectId = UUID.randomUUID();
         var environmentId = UUID.randomUUID();
 
         // when
-        notifier.rebuildRequired(projectId, environmentId, 15L);
+        notifier.rebuildRequiredForEnvironment(environmentId, 15L);
 
         // then
         assertThat(sseClients.broadcastScope())
-                .isEqualTo(SseScope.environmentScope(projectId, environmentId));
+                .isEqualTo(SseScope.environmentScope(environmentId));
         assertThat(sseClients.broadcastEvent())
                 .isEqualTo(SseEvent.rebuildRequired(15L));
     }
@@ -38,7 +37,7 @@ class FeatureToggleSseNotifierTest {
         var projectId = UUID.randomUUID();
 
         // when
-        notifier.rebuildRequired(projectId, 21L);
+        notifier.rebuildRequiredForProject(projectId, 21L);
 
         // then
         assertThat(sseClients.broadcastScope())

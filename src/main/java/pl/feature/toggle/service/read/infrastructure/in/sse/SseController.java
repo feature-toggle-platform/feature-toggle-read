@@ -24,9 +24,10 @@ class SseController {
             value = "/projects/{projectId}/environments/{environmentId}/feature-toggles/stream",
             produces = MediaType.TEXT_EVENT_STREAM_VALUE
     )
-    public SseEmitter establishSSEConnection(@PathVariable String projectId, @PathVariable String environmentId) {
+    public SseEmitter establishSSEConnection(@PathVariable String projectId, @PathVariable(required = false) String environmentId) {
         var sseConnection = SpringSseConnection.create(HEARTBEAT_INTERVAL_IN_S);
-        sseUseCase.establish(ProjectId.create(projectId), EnvironmentId.create(environmentId), sseConnection);
+        var environmentIdVO = environmentId == null ? null : EnvironmentId.create(environmentId);
+        sseUseCase.establish(ProjectId.create(projectId), environmentIdVO, sseConnection);
         return sseConnection.sseEmitter();
     }
 

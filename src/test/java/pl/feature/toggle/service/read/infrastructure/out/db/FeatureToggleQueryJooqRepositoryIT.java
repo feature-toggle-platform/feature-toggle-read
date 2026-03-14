@@ -106,7 +106,6 @@ class FeatureToggleQueryJooqRepositoryIT extends AbstractITTest {
 
         var consistentView = fakeFeatureToggleViewBuilder()
                 .id(consistentId)
-                .projectId(PROJECT_ID)
                 .environmentId(ENVIRONMENT_ID)
                 .name("my-toggle")
                 .revision(Revision.from(1))
@@ -115,7 +114,6 @@ class FeatureToggleQueryJooqRepositoryIT extends AbstractITTest {
 
         var inconsistentView = fakeFeatureToggleViewBuilder()
                 .id(inconsistentId)
-                .projectId(PROJECT_ID)
                 .environmentId(ENVIRONMENT_ID)
                 .name("my-toggle2")
                 .revision(Revision.from(1))
@@ -201,7 +199,6 @@ class FeatureToggleQueryJooqRepositoryIT extends AbstractITTest {
 
         insertToggleView(fakeFeatureToggleViewBuilder()
                 .id(devToggleZId)
-                .projectId(PROJECT_ID)
                 .environmentId(devEnvironmentId)
                 .name("z-dev-toggle")
                 .description("z-dev-desc")
@@ -213,7 +210,6 @@ class FeatureToggleQueryJooqRepositoryIT extends AbstractITTest {
 
         insertToggleView(fakeFeatureToggleViewBuilder()
                 .id(prodToggleZId)
-                .projectId(PROJECT_ID)
                 .environmentId(prodEnvironmentId)
                 .name("z-prod-toggle")
                 .description("z-prod-desc")
@@ -225,7 +221,6 @@ class FeatureToggleQueryJooqRepositoryIT extends AbstractITTest {
 
         insertToggleView(fakeFeatureToggleViewBuilder()
                 .id(prodToggleAId)
-                .projectId(PROJECT_ID)
                 .environmentId(prodEnvironmentId)
                 .name("a-prod-toggle")
                 .description("a-prod-desc")
@@ -237,7 +232,6 @@ class FeatureToggleQueryJooqRepositoryIT extends AbstractITTest {
 
         insertToggleView(fakeFeatureToggleViewBuilder()
                 .id(devToggleAId)
-                .projectId(PROJECT_ID)
                 .environmentId(devEnvironmentId)
                 .name("a-dev-toggle")
                 .description("a-dev-desc")
@@ -375,7 +369,6 @@ class FeatureToggleQueryJooqRepositoryIT extends AbstractITTest {
 
         insertToggleView(fakeFeatureToggleViewBuilder()
                 .id(targetToggleZId)
-                .projectId(targetProjectId)
                 .environmentId(targetEnvironmentId)
                 .name("z-target-toggle")
                 .description("z-target-desc")
@@ -387,7 +380,6 @@ class FeatureToggleQueryJooqRepositoryIT extends AbstractITTest {
 
         insertToggleView(fakeFeatureToggleViewBuilder()
                 .id(targetToggleAId)
-                .projectId(targetProjectId)
                 .environmentId(targetEnvironmentId)
                 .name("a-target-toggle")
                 .description("a-target-desc")
@@ -399,14 +391,12 @@ class FeatureToggleQueryJooqRepositoryIT extends AbstractITTest {
 
         insertToggleView(fakeFeatureToggleViewBuilder()
                 .id(FeatureToggleId.create())
-                .projectId(targetProjectId)
                 .environmentId(otherEnvironmentId)
                 .name("should-be-filtered-by-environment")
                 .build());
 
         insertToggleView(fakeFeatureToggleViewBuilder()
                 .id(FeatureToggleId.create())
-                .projectId(otherProjectId)
                 .environmentId(otherProjectEnvironmentId)
                 .name("should-be-filtered-by-project")
                 .build());

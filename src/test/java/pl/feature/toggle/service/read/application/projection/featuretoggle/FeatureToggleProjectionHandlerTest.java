@@ -49,7 +49,6 @@ class FeatureToggleProjectionHandlerTest extends AbstractUnitTest {
         var featureToggleId = FeatureToggleId.create();
 
         var event = featureToggleCreatedEventBuilder()
-                .projectId(ProjectId.create().uuid())
                 .id(featureToggleId.uuid())
                 .name("TEST")
                 .environmentId(EnvironmentId.create().uuid())
@@ -85,7 +84,6 @@ class FeatureToggleProjectionHandlerTest extends AbstractUnitTest {
         applicationEventPublishedSpy.expectNoEvents();
 
         var event = featureToggleStatusChangedBuilder()
-                .projectId(existing.id().uuid())
                 .status(ProjectStatus.ARCHIVED.name())
                 .revision(existing.revision().next().value())
                 .build();
@@ -113,7 +111,6 @@ class FeatureToggleProjectionHandlerTest extends AbstractUnitTest {
         applicationEventPublishedSpy.expectNoEvents();
 
         var event = featureToggleValueChangedBuilder()
-                .projectId(existing.id().uuid())
                 .type(FeatureToggleValueType.BOOLEAN.name())
                 .value(FeatureToggleValueBuilder.bool(false).asText())
                 .revision(existing.revision().next().value())
@@ -143,7 +140,6 @@ class FeatureToggleProjectionHandlerTest extends AbstractUnitTest {
         applicationEventPublishedSpy.expectNoEvents();
 
         var event = featureToggleUpdatedEventBuilder()
-                .projectId(existing.id().uuid())
                 .name("new name")
                 .description("new description")
                 .revision(existing.revision().next().value())
@@ -172,7 +168,6 @@ class FeatureToggleProjectionHandlerTest extends AbstractUnitTest {
         featureToggleViewProjectionRepositorySpy.markInconsistentIfNotMarkedReturns(true);
 
         var event = featureToggleStatusChangedBuilder()
-                .projectId(existing.projectId().uuid())
                 .id(existing.id().uuid())
                 .status(ProjectStatus.ARCHIVED.name())
                 .revision(5)

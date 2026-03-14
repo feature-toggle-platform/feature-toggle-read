@@ -91,7 +91,6 @@ class FeatureToggleEventualConsistencyIT extends AbstractITTest {
         environmentProjectionRepository.insert(environmentView);
 
         when(writeClient.fetchFeatureToggle(featureToggleId)).thenReturn(fakeFeatureToggleViewBuilder()
-                .projectId(projectId)
                 .id(featureToggleId)
                 .environmentId(envId)
                 .status(FeatureToggleStatus.ARCHIVED)
@@ -99,7 +98,6 @@ class FeatureToggleEventualConsistencyIT extends AbstractITTest {
                 .build());
 
         var outOfOrderStatusChanged = featureToggleStatusChangedBuilder()
-                .projectId(projectId.uuid())
                 .environmentId(envId.uuid())
                 .id(featureToggleId.uuid())
                 .status(FeatureToggleStatus.ARCHIVED.name())
@@ -107,7 +105,6 @@ class FeatureToggleEventualConsistencyIT extends AbstractITTest {
                 .build();
 
         var createdLater = featureToggleCreatedEventBuilder()
-                .projectId(projectId.uuid())
                 .id(featureToggleId.uuid())
                 .environmentId(envId.uuid())
                 .createdAt(LocalDateTime.now())
@@ -148,12 +145,11 @@ class FeatureToggleEventualConsistencyIT extends AbstractITTest {
                 .revision(Revision.initialRevision())
                 .build();
         var environmentView = fakeEnvironmentViewBuilder()
-                .projectId(projectId)
                 .id(envId)
+                .projectId(projectId)
                 .status(EnvironmentStatus.ACTIVE)
                 .build();
         var featureToggleView = fakeFeatureToggleViewBuilder()
-                .projectId(projectId)
                 .id(featureToggleId)
                 .environmentId(envId)
                 .status(FeatureToggleStatus.ACTIVE)
@@ -164,7 +160,6 @@ class FeatureToggleEventualConsistencyIT extends AbstractITTest {
         featureToggleProjectionRepository.insert(featureToggleView);
 
         when(writeClient.fetchFeatureToggle(featureToggleId)).thenReturn(fakeFeatureToggleViewBuilder()
-                .projectId(projectId)
                 .id(featureToggleId)
                 .environmentId(envId)
                 .status(FeatureToggleStatus.ARCHIVED)
@@ -172,7 +167,6 @@ class FeatureToggleEventualConsistencyIT extends AbstractITTest {
                 .build());
 
         var gapEvent = featureToggleStatusChangedBuilder()
-                .projectId(projectId.uuid())
                 .environmentId(envId.uuid())
                 .id(featureToggleId.uuid())
                 .status(FeatureToggleStatus.ARCHIVED.name())

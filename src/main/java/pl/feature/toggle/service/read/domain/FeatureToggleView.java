@@ -12,14 +12,12 @@ import pl.feature.toggle.service.model.featuretoggle.FeatureToggleDescription;
 import pl.feature.toggle.service.model.featuretoggle.FeatureToggleId;
 import pl.feature.toggle.service.model.featuretoggle.FeatureToggleName;
 import pl.feature.toggle.service.model.featuretoggle.FeatureToggleStatus;
-import pl.feature.toggle.service.model.project.ProjectId;
 import pl.feature.toggle.service.value.FeatureToggleValue;
 import pl.feature.toggle.service.value.FeatureToggleValueBuilder;
 import pl.feature.toggle.service.value.FeatureToggleValueSnapshot;
 
 public record FeatureToggleView(
         FeatureToggleId id,
-        ProjectId projectId,
         EnvironmentId environmentId,
         FeatureToggleName name,
         FeatureToggleDescription description,
@@ -35,7 +33,6 @@ public record FeatureToggleView(
     public static FeatureToggleView create(FeatureToggleCreated event) {
         return new FeatureToggleView(
                 FeatureToggleId.create(event.id()),
-                ProjectId.create(event.projectId()),
                 EnvironmentId.create(event.environmentId()),
                 FeatureToggleName.create(event.name()),
                 FeatureToggleDescription.create(event.description()),
@@ -51,7 +48,6 @@ public record FeatureToggleView(
     public FeatureToggleView apply(FeatureToggleUpdated event) {
         return new FeatureToggleView(
                 this.id,
-                this.projectId,
                 this.environmentId,
                 FeatureToggleName.create(event.name()),
                 FeatureToggleDescription.create(event.description()),
@@ -67,7 +63,6 @@ public record FeatureToggleView(
     public FeatureToggleView apply(FeatureToggleValueChanged event) {
         return new FeatureToggleView(
                 this.id,
-                this.projectId,
                 this.environmentId,
                 this.name,
                 this.description,
@@ -83,7 +78,6 @@ public record FeatureToggleView(
     public FeatureToggleView apply(FeatureToggleStatusChanged event) {
         return new FeatureToggleView(
                 this.id,
-                this.projectId,
                 this.environmentId,
                 this.name,
                 this.description,

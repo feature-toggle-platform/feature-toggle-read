@@ -38,7 +38,7 @@ class KafkaEventConsumer {
         eventProcessor.process(
                 event,
                 featureToggleProjection::handle,
-                () -> featureToggleSseNotifier.rebuildRequired(event.projectId(), event.environmentId(), event.revision()),
+                () -> featureToggleSseNotifier.rebuildRequiredForEnvironment(event.environmentId(), event.revision()),
                 acknowledgment::acknowledge);
     }
 
@@ -47,7 +47,7 @@ class KafkaEventConsumer {
         eventProcessor.process(
                 event,
                 featureToggleProjection::handle,
-                () -> featureToggleSseNotifier.rebuildRequired(event.projectId(), event.environmentId(), event.revision()),
+                () -> featureToggleSseNotifier.rebuildRequiredForEnvironment(event.environmentId(), event.revision()),
                 acknowledgment::acknowledge);
     }
 
@@ -56,7 +56,7 @@ class KafkaEventConsumer {
         eventProcessor.process(
                 event,
                 featureToggleProjection::handle,
-                () -> featureToggleSseNotifier.rebuildRequired(event.projectId(), event.environmentId(), event.revision()),
+                () -> featureToggleSseNotifier.rebuildRequiredForEnvironment(event.environmentId(), event.revision()),
                 acknowledgment::acknowledge);
     }
 
@@ -65,7 +65,7 @@ class KafkaEventConsumer {
         eventProcessor.process(
                 event,
                 featureToggleProjection::handle,
-                () -> featureToggleSseNotifier.rebuildRequired(event.projectId(), event.environmentId(), event.revision()),
+                () -> featureToggleSseNotifier.rebuildRequiredForEnvironment(event.environmentId(), event.revision()),
                 acknowledgment::acknowledge);
     }
 
@@ -90,7 +90,7 @@ class KafkaEventConsumer {
         eventProcessor.process(
                 event,
                 projectProjection::handle,
-                () -> featureToggleSseNotifier.rebuildRequired(event.projectId(), event.revision()),
+                () -> featureToggleSseNotifier.rebuildRequiredForProject(event.projectId(), event.revision()),
                 acknowledgment::acknowledge);
     }
 
@@ -115,7 +115,7 @@ class KafkaEventConsumer {
         eventProcessor.process(
                 event,
                 environmentProjection::handle,
-                () -> featureToggleSseNotifier.rebuildRequired(event.projectId(), event.environmentId(), event.revision()),
+                () -> featureToggleSseNotifier.rebuildRequiredForEnvironment(event.environmentId(), event.revision()),
                 acknowledgment::acknowledge);
     }
 

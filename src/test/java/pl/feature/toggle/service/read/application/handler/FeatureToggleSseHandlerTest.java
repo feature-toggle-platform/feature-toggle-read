@@ -31,10 +31,22 @@ class FeatureToggleSseHandlerTest {
 
         // then
         assertThat(sseClients.registeredScope())
-                .isEqualTo(SseScope.environmentScope(
-                        projectId.uuid(),
-                        environmentId.uuid()
-                ));
+                .isEqualTo(SseScope.environmentScope(environmentId));
+        assertThat(sseClients.registeredConnection()).isSameAs(connection);
+    }
+
+    @Test
+    void should_register_connection_for_project_scope() {
+        // given
+        var projectId = ProjectId.create(UUID.randomUUID().toString());
+        var connection = new TestSseConnection();
+
+        // when
+        handler.establish(projectId, null, connection);
+
+        // then
+        assertThat(sseClients.registeredScope())
+                .isEqualTo(SseScope.projectScope(projectId));
         assertThat(sseClients.registeredConnection()).isSameAs(connection);
     }
 

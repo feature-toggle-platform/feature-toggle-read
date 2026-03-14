@@ -21,7 +21,7 @@ CREATE TABLE environment_view
     project_id uuid         not null references project_view (id),
     name       varchar(100) not null,
     created_at timestamp    not null,
-    updated_at  timestamp    not null,
+    updated_at timestamp    not null,
     status     varchar(10)  not null,
     type       varchar(10)  not null,
     revision   bigint       not null,
@@ -31,7 +31,6 @@ CREATE TABLE environment_view
 CREATE TABLE feature_toggle_view
 (
     id             uuid primary key,
-    project_id     uuid         not null,
     environment_id uuid         not null,
     name           varchar(100) not null,
     description    varchar(200),

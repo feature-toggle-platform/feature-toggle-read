@@ -43,7 +43,6 @@ class FeatureToggleProjectionJooqRepositoryIT extends AbstractITTest {
         var toggleId = FeatureToggleId.create();
         var expected = fakeFeatureToggleViewBuilder()
                 .id(toggleId)
-                .projectId(PROJECT_ID)
                 .environmentId(ENVIRONMENT_ID)
                 .name("toggle-" + UUID.randomUUID())
                 .description("desc-" + UUID.randomUUID())
@@ -62,7 +61,6 @@ class FeatureToggleProjectionJooqRepositoryIT extends AbstractITTest {
         var actual = queryRepository.find(toggleId).orElseThrow();
 
         assertThat(actual.id()).isEqualTo(toggleId);
-        assertThat(actual.projectId()).isEqualTo(PROJECT_ID);
         assertThat(actual.environmentId()).isEqualTo(ENVIRONMENT_ID);
 
         assertThat(actual.name()).isEqualTo(expected.name());
@@ -83,7 +81,7 @@ class FeatureToggleProjectionJooqRepositoryIT extends AbstractITTest {
         var toggleId = FeatureToggleId.create();
         var existing = fakeFeatureToggleViewBuilder()
                 .id(toggleId)
-                .projectId(PROJECT_ID)
+
                 .environmentId(ENVIRONMENT_ID)
                 .name("N1")
                 .description("D1")
@@ -98,7 +96,7 @@ class FeatureToggleProjectionJooqRepositoryIT extends AbstractITTest {
 
         var updated = fakeFeatureToggleViewBuilder()
                 .id(toggleId)
-                .projectId(PROJECT_ID)
+
                 .environmentId(ENVIRONMENT_ID)
                 .name("SHOULD_NOT_CHANGE")
                 .description("SHOULD_NOT_CHANGE")
@@ -134,7 +132,7 @@ class FeatureToggleProjectionJooqRepositoryIT extends AbstractITTest {
         var toggleId = FeatureToggleId.create();
         var existing = fakeFeatureToggleViewBuilder()
                 .id(toggleId)
-                .projectId(PROJECT_ID)
+
                 .environmentId(ENVIRONMENT_ID)
                 .name("N1")
                 .description("D1")
@@ -149,7 +147,7 @@ class FeatureToggleProjectionJooqRepositoryIT extends AbstractITTest {
 
         var updated = fakeFeatureToggleViewBuilder()
                 .id(toggleId)
-                .projectId(PROJECT_ID)
+
                 .environmentId(ENVIRONMENT_ID)
                 .name("N2")
                 .description("D2")
@@ -185,7 +183,7 @@ class FeatureToggleProjectionJooqRepositoryIT extends AbstractITTest {
         var toggleId = FeatureToggleId.create();
         var existing = fakeFeatureToggleViewBuilder()
                 .id(toggleId)
-                .projectId(PROJECT_ID)
+
                 .environmentId(ENVIRONMENT_ID)
                 .name("N1")
                 .description("D1")
@@ -200,7 +198,7 @@ class FeatureToggleProjectionJooqRepositoryIT extends AbstractITTest {
 
         var updated = fakeFeatureToggleViewBuilder()
                 .id(toggleId)
-                .projectId(PROJECT_ID)
+
                 .environmentId(ENVIRONMENT_ID)
                 .name("SHOULD_NOT_CHANGE")
                 .description("SHOULD_NOT_CHANGE")
@@ -236,7 +234,7 @@ class FeatureToggleProjectionJooqRepositoryIT extends AbstractITTest {
         var toggleId = FeatureToggleId.create();
         var expected = fakeFeatureToggleViewBuilder()
                 .id(toggleId)
-                .projectId(PROJECT_ID)
+
                 .environmentId(ENVIRONMENT_ID)
                 .name("N1")
                 .description("D1")
@@ -270,7 +268,7 @@ class FeatureToggleProjectionJooqRepositoryIT extends AbstractITTest {
         var toggleId = FeatureToggleId.create();
         var existing = fakeFeatureToggleViewBuilder()
                 .id(toggleId)
-                .projectId(PROJECT_ID)
+
                 .environmentId(ENVIRONMENT_ID)
                 .name("N1")
                 .description("D1")
@@ -285,7 +283,7 @@ class FeatureToggleProjectionJooqRepositoryIT extends AbstractITTest {
 
         var updated = fakeFeatureToggleViewBuilder()
                 .id(toggleId)
-                .projectId(PROJECT_ID)
+
                 .environmentId(ENVIRONMENT_ID)
                 .name("N2")
                 .description("D2")
@@ -323,7 +321,7 @@ class FeatureToggleProjectionJooqRepositoryIT extends AbstractITTest {
         var toggleId = FeatureToggleId.create();
         sut.insert(fakeFeatureToggleViewBuilder()
                 .id(toggleId)
-                .projectId(PROJECT_ID)
+
                 .environmentId(ENVIRONMENT_ID)
                 .name("N1")
                 .description("D1")

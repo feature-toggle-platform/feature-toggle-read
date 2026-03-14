@@ -72,7 +72,6 @@ class Mapper {
     static FeatureToggleView toView(FeatureToggleViewRecord record) {
         return new FeatureToggleView(
                 FeatureToggleId.create(record.getId()),
-                ProjectId.create(record.getProjectId()),
                 EnvironmentId.create(record.getEnvironmentId()),
                 FeatureToggleName.create(record.getName()),
                 FeatureToggleDescription.create(record.getDescription()),
@@ -87,7 +86,7 @@ class Mapper {
 
     static FeatureToggleQueryRow toFeatureToggleQueryRow(Record record) {
         return new FeatureToggleQueryRow(
-                record.get(FEATURE_TOGGLE_VIEW.PROJECT_ID),
+                record.get(PROJECT_VIEW.ID),
                 record.get(PROJECT_VIEW.NAME),
                 record.get(FEATURE_TOGGLE_VIEW.ENVIRONMENT_ID),
                 record.get(ENVIRONMENT_VIEW.NAME),
