@@ -1,13 +1,16 @@
 package pl.feature.toggle.service.read.application.projection.project;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
 import pl.feature.toggle.service.contracts.event.project.ProjectCreated;
 import pl.feature.toggle.service.contracts.event.project.ProjectStatusChanged;
 import pl.feature.toggle.service.contracts.event.project.ProjectUpdated;
+import pl.feature.toggle.service.contracts.shared.EventId;
 import pl.feature.toggle.service.event.processing.api.RevisionProjectionApplier;
 import pl.feature.toggle.service.event.processing.api.RevisionProjectionPlan;
+import pl.feature.toggle.service.event.processing.internal.RevisionApplierResult;
 import pl.feature.toggle.service.model.Revision;
 import pl.feature.toggle.service.model.project.ProjectId;
 import pl.feature.toggle.service.read.application.port.in.ProjectProjection;
@@ -20,6 +23,7 @@ import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
 @AllArgsConstructor
+@Slf4j
 class ProjectProjectionHandler implements ProjectProjection {
 
     private final ProjectProjectionRepository projectionRepository;
@@ -30,7 +34,10 @@ class ProjectProjectionHandler implements ProjectProjection {
     @Override
     @Transactional
     public void handle(ProjectCreated event) {
-        applyCreate(event);
+        var result = applyCreate(event);
+        if (result.wasApplied()) {
+            log.info("Project projection created: projectId={}, revision={}", event.projectId(), event.revision());
+        }
     }
 
     @Override
@@ -39,12 +46,16 @@ class ProjectProjectionHandler implements ProjectProjection {
         var projectId = ProjectId.create(event.projectId());
         var incoming = Revision.from(event.revision());
 
-        applyUpdate(
+        var result = applyUpdate(
+                event.eventId(),
                 incoming,
                 projectId,
                 projectionRepository::updateBasicFields,
                 current -> current.apply(event)
         );
+        if (result.wasApplied()) {
+            log.info("Project projection updated: projectId={}, revision={}", event.projectId(), event.revision());
+        }
     }
 
     @Override
@@ -53,22 +64,27 @@ class ProjectProjectionHandler implements ProjectProjection {
         var projectId = ProjectId.create(event.projectId());
         var incoming = Revision.from(event.revision());
 
-        applyUpdate(
+        var result = applyUpdate(
+                event.eventId(),
                 incoming,
                 projectId,
                 projectionRepository::updateStatus,
                 current -> current.apply(event)
         );
+        if (result.wasApplied()) {
+            log.info("Project projection status changed: projectId={}, newStatus={}, revision={}", event.projectId(), event.status(), event.revision());
+        }
     }
 
-    private void applyCreate(ProjectCreated event) {
+    private RevisionApplierResult applyCreate(ProjectCreated event) {
         var projectId = ProjectId.create(event.projectId());
         var incoming = Revision.from(event.revision());
         var view = ProjectView.create(event);
         var rebuildEvent = new ProjectViewRebuildRequested(projectId);
 
-        revisionProjectionApplier.apply(
+        return revisionProjectionApplier.apply(
                 RevisionProjectionPlan.<ProjectView>forIncoming(incoming)
+                        .eventId(event.eventId())
                         .findCurrentUsing(() -> projectQueryRepository.find(projectId))
                         .onMissing(() -> projectionRepository.insert(view))
                         .extractCurrentRevisionUsing(ProjectView::revision)
@@ -79,7 +95,8 @@ class ProjectProjectionHandler implements ProjectProjection {
         );
     }
 
-    private void applyUpdate(
+    private RevisionApplierResult applyUpdate(
+            EventId eventId,
             Revision incoming,
             ProjectId projectId,
             Consumer<ProjectView> persist,
@@ -87,8 +104,9 @@ class ProjectProjectionHandler implements ProjectProjection {
     ) {
         var rebuildEvent = new ProjectViewRebuildRequested(projectId);
 
-        revisionProjectionApplier.apply(
+        return revisionProjectionApplier.apply(
                 RevisionProjectionPlan.<ProjectView>forIncoming(incoming)
+                        .eventId(eventId)
                         .findCurrentUsing(() -> projectQueryRepository.find(projectId))
                         .onMissing(() -> eventPublisher.publishEvent(rebuildEvent))
                         .extractCurrentRevisionUsing(ProjectView::revision)

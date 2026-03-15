@@ -1,14 +1,17 @@
 package pl.feature.toggle.service.read.application.projection.featuretoggle;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
 import pl.feature.toggle.service.contracts.event.featuretoggle.FeatureToggleCreated;
 import pl.feature.toggle.service.contracts.event.featuretoggle.FeatureToggleStatusChanged;
 import pl.feature.toggle.service.contracts.event.featuretoggle.FeatureToggleUpdated;
 import pl.feature.toggle.service.contracts.event.featuretoggle.FeatureToggleValueChanged;
+import pl.feature.toggle.service.contracts.shared.EventId;
 import pl.feature.toggle.service.event.processing.api.RevisionProjectionApplier;
 import pl.feature.toggle.service.event.processing.api.RevisionProjectionPlan;
+import pl.feature.toggle.service.event.processing.internal.RevisionApplierResult;
 import pl.feature.toggle.service.model.Revision;
 import pl.feature.toggle.service.model.featuretoggle.FeatureToggleId;
 import pl.feature.toggle.service.read.application.port.in.FeatureToggleProjection;
@@ -21,6 +24,7 @@ import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
 @AllArgsConstructor
+@Slf4j
 class FeatureToggleProjectionHandler implements FeatureToggleProjection {
 
     private final FeatureToggleProjectionRepository projectionRepository;
@@ -31,7 +35,11 @@ class FeatureToggleProjectionHandler implements FeatureToggleProjection {
     @Override
     @Transactional
     public void handle(FeatureToggleCreated event) {
-        applyCreate(event);
+        var result = applyCreate(event);
+        if (result.wasApplied()) {
+            log.info("Feature-Toggle projection created: environmentId={}, featureToggleId={}, revision={}",
+                    event.environmentId(), event.id(), event.revision());
+        }
     }
 
     @Override
@@ -39,12 +47,17 @@ class FeatureToggleProjectionHandler implements FeatureToggleProjection {
     public void handle(FeatureToggleUpdated event) {
         var incoming = Revision.from(event.revision());
         var featureToggleId = FeatureToggleId.create(event.id());
-        applyUpdate(
+        var result = applyUpdate(
+                event.eventId(),
                 incoming,
                 featureToggleId,
                 projectionRepository::updateBasicFields,
                 current -> current.apply(event)
         );
+        if (result.wasApplied()) {
+            log.info("Feature-Toggle projection updated: environmentId={}, featureToggleId={}, revision={}",
+                    event.environmentId(), event.id(), event.revision());
+        }
     }
 
     @Override
@@ -52,12 +65,17 @@ class FeatureToggleProjectionHandler implements FeatureToggleProjection {
     public void handle(FeatureToggleValueChanged event) {
         var incoming = Revision.from(event.revision());
         var featureToggleId = FeatureToggleId.create(event.id());
-        applyUpdate(
+        var result = applyUpdate(
+                event.eventId(),
                 incoming,
                 featureToggleId,
                 projectionRepository::updateValue,
                 current -> current.apply(event)
         );
+        if (result.wasApplied()) {
+            log.info("Feature-Toggle projection value changed: environmentId={}, featureToggleId={}, newValue={} revision={}",
+                    event.environmentId(), event.id(), event.value(), event.revision());
+        }
     }
 
     @Override
@@ -65,22 +83,28 @@ class FeatureToggleProjectionHandler implements FeatureToggleProjection {
     public void handle(FeatureToggleStatusChanged event) {
         var incoming = Revision.from(event.revision());
         var featureToggleId = FeatureToggleId.create(event.id());
-        applyUpdate(
+        var result = applyUpdate(
+                event.eventId(),
                 incoming,
                 featureToggleId,
                 projectionRepository::updateStatus,
                 current -> current.apply(event)
         );
+        if (result.wasApplied()) {
+            log.info("Feature-Toggle projection status changed: environmentId={}, featureToggleId={}, newStatus={}, revision={}",
+                    event.environmentId(), event.id(), event.status(), event.revision());
+        }
     }
 
-    private void applyCreate(FeatureToggleCreated event) {
+    private RevisionApplierResult applyCreate(FeatureToggleCreated event) {
         var featureToggleId = FeatureToggleId.create(event.id());
         var incoming = Revision.from(event.revision());
         var view = FeatureToggleView.create(event);
         var rebuildEvent = new FeatureToggleViewRebuildRequested(featureToggleId);
 
-        revisionProjectionApplier.apply(
+        return revisionProjectionApplier.apply(
                 RevisionProjectionPlan.<FeatureToggleView>forIncoming(incoming)
+                        .eventId(event.eventId())
                         .findCurrentUsing(() -> queryRepository.find(featureToggleId))
                         .onMissing(() -> projectionRepository.insert(view))
                         .extractCurrentRevisionUsing(FeatureToggleView::revision)
@@ -91,7 +115,8 @@ class FeatureToggleProjectionHandler implements FeatureToggleProjection {
         );
     }
 
-    private void applyUpdate(
+    private RevisionApplierResult applyUpdate(
+            EventId eventId,
             Revision incoming,
             FeatureToggleId featureToggleId,
             Consumer<FeatureToggleView> persist,
@@ -99,8 +124,9 @@ class FeatureToggleProjectionHandler implements FeatureToggleProjection {
     ) {
         var rebuildEvent = new FeatureToggleViewRebuildRequested(featureToggleId);
 
-        revisionProjectionApplier.apply(
+        return revisionProjectionApplier.apply(
                 RevisionProjectionPlan.<FeatureToggleView>forIncoming(incoming)
+                        .eventId(eventId)
                         .findCurrentUsing(() -> queryRepository.find(featureToggleId))
                         .onMissing(() -> eventPublisher.publishEvent(rebuildEvent))
                         .extractCurrentRevisionUsing(FeatureToggleView::revision)

@@ -1,6 +1,7 @@
 package pl.feature.toggle.service.read.application.handler;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import pl.feature.toggle.service.model.environment.EnvironmentId;
 import pl.feature.toggle.service.model.project.ProjectId;
 import pl.feature.toggle.service.read.application.port.in.FeatureToggleSseUseCase;
@@ -10,6 +11,7 @@ import pl.feature.toggle.service.read.application.port.out.sse.SseEvent;
 import pl.feature.toggle.service.read.application.port.out.sse.SseScope;
 
 @AllArgsConstructor
+@Slf4j
 class FeatureToggleSseHandler implements FeatureToggleSseUseCase {
 
     private final SseClients sseClients;
@@ -21,5 +23,6 @@ class FeatureToggleSseHandler implements FeatureToggleSseUseCase {
         sseConnection.onClose(subscription::unsubscribe);
         sseConnection.onError(ex -> subscription.unsubscribe());
         sseConnection.send(SseEvent.connectedEvent());
+        log.info("SSE connection established for projectId={}, environmentId={}", projectId.uuid(), environmentId.uuid());
     }
 }
