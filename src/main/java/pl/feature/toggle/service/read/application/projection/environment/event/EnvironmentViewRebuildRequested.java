@@ -2,9 +2,11 @@ package pl.feature.toggle.service.read.application.projection.environment.event;
 
 import pl.feature.toggle.service.model.environment.EnvironmentId;
 import pl.feature.toggle.service.model.project.ProjectId;
+import pl.feature.toggle.service.model.security.correlation.CorrelationId;
 
 public record EnvironmentViewRebuildRequested(
         ProjectId projectId,
-        EnvironmentId environmentId
+        EnvironmentId environmentId,
+        CorrelationId correlationId
 ) {
 }

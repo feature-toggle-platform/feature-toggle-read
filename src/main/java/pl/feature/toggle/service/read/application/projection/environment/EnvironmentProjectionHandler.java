@@ -15,6 +15,7 @@ import pl.feature.toggle.service.event.processing.internal.RevisionApplierResult
 import pl.feature.toggle.service.model.Revision;
 import pl.feature.toggle.service.model.environment.EnvironmentId;
 import pl.feature.toggle.service.model.project.ProjectId;
+import pl.feature.toggle.service.model.security.correlation.CorrelationId;
 import pl.feature.toggle.service.read.application.port.in.EnvironmentProjection;
 import pl.feature.toggle.service.read.application.port.out.EnvironmentProjectionRepository;
 import pl.feature.toggle.service.read.application.port.out.EnvironmentQueryRepository;
@@ -47,6 +48,7 @@ class EnvironmentProjectionHandler implements EnvironmentProjection {
     @Transactional
     public void handle(EnvironmentUpdated event) {
         var result = applyUpdate(
+                event.correlationId(),
                 event.eventId(),
                 EnvironmentId.create(event.environmentId()),
                 ProjectId.create(event.projectId()),
@@ -64,6 +66,7 @@ class EnvironmentProjectionHandler implements EnvironmentProjection {
     @Transactional
     public void handle(EnvironmentStatusChanged event) {
         var result = applyUpdate(
+                event.correlationId(),
                 event.eventId(),
                 EnvironmentId.create(event.environmentId()),
                 ProjectId.create(event.projectId()),
@@ -81,6 +84,7 @@ class EnvironmentProjectionHandler implements EnvironmentProjection {
     @Transactional
     public void handle(EnvironmentTypeChanged event) {
         var result = applyUpdate(
+                event.correlationId(),
                 event.eventId(),
                 EnvironmentId.create(event.environmentId()),
                 ProjectId.create(event.projectId()),
@@ -98,9 +102,10 @@ class EnvironmentProjectionHandler implements EnvironmentProjection {
         var projectId = ProjectId.create(event.projectId());
         var environmentId = EnvironmentId.create(event.environmentId());
         var incoming = Revision.from(event.revision());
+        var correlationId = event.correlationId();
 
         var view = EnvironmentView.create(event);
-        var rebuildEvent = new EnvironmentViewRebuildRequested(projectId, environmentId);
+        var rebuildEvent = new EnvironmentViewRebuildRequested(projectId, environmentId, CorrelationId.of(correlationId));
 
         return revisionProjectionApplier.apply(
                 RevisionProjectionPlan.<EnvironmentView>forIncoming(incoming)
@@ -116,6 +121,7 @@ class EnvironmentProjectionHandler implements EnvironmentProjection {
     }
 
     private RevisionApplierResult applyUpdate(
+            String correlationId,
             EventId eventId,
             EnvironmentId environmentId,
             ProjectId projectId,
@@ -123,7 +129,7 @@ class EnvironmentProjectionHandler implements EnvironmentProjection {
             Consumer<EnvironmentView> persist,
             UnaryOperator<EnvironmentView> mutate
     ) {
-        var rebuildEvent = new EnvironmentViewRebuildRequested(projectId, environmentId);
+        var rebuildEvent = new EnvironmentViewRebuildRequested(projectId, environmentId, CorrelationId.of(correlationId));
 
         return revisionProjectionApplier.apply(
                 RevisionProjectionPlan.<EnvironmentView>forIncoming(incoming)

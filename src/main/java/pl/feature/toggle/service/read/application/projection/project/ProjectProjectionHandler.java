@@ -13,6 +13,7 @@ import pl.feature.toggle.service.event.processing.api.RevisionProjectionPlan;
 import pl.feature.toggle.service.event.processing.internal.RevisionApplierResult;
 import pl.feature.toggle.service.model.Revision;
 import pl.feature.toggle.service.model.project.ProjectId;
+import pl.feature.toggle.service.model.security.correlation.CorrelationId;
 import pl.feature.toggle.service.read.application.port.in.ProjectProjection;
 import pl.feature.toggle.service.read.application.port.out.ProjectProjectionRepository;
 import pl.feature.toggle.service.read.application.port.out.ProjectQueryRepository;
@@ -47,6 +48,7 @@ class ProjectProjectionHandler implements ProjectProjection {
         var incoming = Revision.from(event.revision());
 
         var result = applyUpdate(
+                event.correlationId(),
                 event.eventId(),
                 incoming,
                 projectId,
@@ -65,6 +67,7 @@ class ProjectProjectionHandler implements ProjectProjection {
         var incoming = Revision.from(event.revision());
 
         var result = applyUpdate(
+                event.correlationId(),
                 event.eventId(),
                 incoming,
                 projectId,
@@ -80,7 +83,8 @@ class ProjectProjectionHandler implements ProjectProjection {
         var projectId = ProjectId.create(event.projectId());
         var incoming = Revision.from(event.revision());
         var view = ProjectView.create(event);
-        var rebuildEvent = new ProjectViewRebuildRequested(projectId);
+        var correlationId = CorrelationId.of(event.correlationId());
+        var rebuildEvent = new ProjectViewRebuildRequested(projectId, correlationId);
 
         return revisionProjectionApplier.apply(
                 RevisionProjectionPlan.<ProjectView>forIncoming(incoming)
@@ -96,13 +100,14 @@ class ProjectProjectionHandler implements ProjectProjection {
     }
 
     private RevisionApplierResult applyUpdate(
+            String correlationId,
             EventId eventId,
             Revision incoming,
             ProjectId projectId,
             Consumer<ProjectView> persist,
             UnaryOperator<ProjectView> mutate
     ) {
-        var rebuildEvent = new ProjectViewRebuildRequested(projectId);
+        var rebuildEvent = new ProjectViewRebuildRequested(projectId, CorrelationId.of(correlationId));
 
         return revisionProjectionApplier.apply(
                 RevisionProjectionPlan.<ProjectView>forIncoming(incoming)

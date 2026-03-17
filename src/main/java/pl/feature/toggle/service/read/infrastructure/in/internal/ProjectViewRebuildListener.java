@@ -3,6 +3,7 @@ package pl.feature.toggle.service.read.infrastructure.in.internal;
 import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.transaction.event.TransactionalEventListener;
+import pl.feature.toggle.service.event.processing.api.CorrelationScope;
 import pl.feature.toggle.service.read.application.port.in.ProjectViewConsistency;
 import pl.feature.toggle.service.read.application.projection.project.event.ProjectViewRebuildRequested;
 
@@ -16,7 +17,10 @@ class ProjectViewRebuildListener {
     @Async
     @TransactionalEventListener(phase = AFTER_COMMIT)
     void on(ProjectViewRebuildRequested event) {
-        consistency.rebuild(event.projectId());
+        CorrelationScope.run(
+                event.correlationId(),
+                () -> consistency.rebuild(event.projectId())
+        );
     }
 
 }

@@ -14,6 +14,7 @@ import pl.feature.toggle.service.event.processing.api.RevisionProjectionPlan;
 import pl.feature.toggle.service.event.processing.internal.RevisionApplierResult;
 import pl.feature.toggle.service.model.Revision;
 import pl.feature.toggle.service.model.featuretoggle.FeatureToggleId;
+import pl.feature.toggle.service.model.security.correlation.CorrelationId;
 import pl.feature.toggle.service.read.application.port.in.FeatureToggleProjection;
 import pl.feature.toggle.service.read.application.port.out.FeatureToggleProjectionRepository;
 import pl.feature.toggle.service.read.application.port.out.FeatureToggleQueryRepository;
@@ -48,6 +49,7 @@ class FeatureToggleProjectionHandler implements FeatureToggleProjection {
         var incoming = Revision.from(event.revision());
         var featureToggleId = FeatureToggleId.create(event.id());
         var result = applyUpdate(
+                event.correlationId(),
                 event.eventId(),
                 incoming,
                 featureToggleId,
@@ -66,6 +68,7 @@ class FeatureToggleProjectionHandler implements FeatureToggleProjection {
         var incoming = Revision.from(event.revision());
         var featureToggleId = FeatureToggleId.create(event.id());
         var result = applyUpdate(
+                event.correlationId(),
                 event.eventId(),
                 incoming,
                 featureToggleId,
@@ -84,6 +87,7 @@ class FeatureToggleProjectionHandler implements FeatureToggleProjection {
         var incoming = Revision.from(event.revision());
         var featureToggleId = FeatureToggleId.create(event.id());
         var result = applyUpdate(
+                event.correlationId(),
                 event.eventId(),
                 incoming,
                 featureToggleId,
@@ -100,7 +104,8 @@ class FeatureToggleProjectionHandler implements FeatureToggleProjection {
         var featureToggleId = FeatureToggleId.create(event.id());
         var incoming = Revision.from(event.revision());
         var view = FeatureToggleView.create(event);
-        var rebuildEvent = new FeatureToggleViewRebuildRequested(featureToggleId);
+        var correlationId = CorrelationId.of(event.correlationId());
+        var rebuildEvent = new FeatureToggleViewRebuildRequested(featureToggleId, correlationId);
 
         return revisionProjectionApplier.apply(
                 RevisionProjectionPlan.<FeatureToggleView>forIncoming(incoming)
@@ -116,13 +121,14 @@ class FeatureToggleProjectionHandler implements FeatureToggleProjection {
     }
 
     private RevisionApplierResult applyUpdate(
+            String correlationId,
             EventId eventId,
             Revision incoming,
             FeatureToggleId featureToggleId,
             Consumer<FeatureToggleView> persist,
             UnaryOperator<FeatureToggleView> mutate
     ) {
-        var rebuildEvent = new FeatureToggleViewRebuildRequested(featureToggleId);
+        var rebuildEvent = new FeatureToggleViewRebuildRequested(featureToggleId, CorrelationId.of(correlationId));
 
         return revisionProjectionApplier.apply(
                 RevisionProjectionPlan.<FeatureToggleView>forIncoming(incoming)
