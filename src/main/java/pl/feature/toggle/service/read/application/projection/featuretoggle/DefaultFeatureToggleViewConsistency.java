@@ -5,13 +5,13 @@ import pl.feature.toggle.service.model.featuretoggle.FeatureToggleId;
 import pl.feature.toggle.service.read.application.port.in.FeatureToggleViewConsistency;
 import pl.feature.toggle.service.read.application.port.out.FeatureToggleProjectionRepository;
 import pl.feature.toggle.service.read.application.port.out.FeatureToggleQueryRepository;
-import pl.feature.toggle.service.read.application.port.out.WriteClient;
+import pl.feature.toggle.service.read.application.port.out.FeatureToggleClient;
 import pl.feature.toggle.service.read.domain.FeatureToggleView;
 
 @AllArgsConstructor
 class DefaultFeatureToggleViewConsistency implements FeatureToggleViewConsistency {
 
-    private final WriteClient writeClient;
+    private final FeatureToggleClient featureToggleClient;
     private final FeatureToggleProjectionRepository projectionRepository;
     private final FeatureToggleQueryRepository queryRepository;
 
@@ -27,7 +27,7 @@ class DefaultFeatureToggleViewConsistency implements FeatureToggleViewConsistenc
     }
 
     private FeatureToggleView fetchAndSaveFeatureToggle(FeatureToggleId featureToggleId) {
-        var featureToggleView = writeClient.fetchFeatureToggle(featureToggleId);
+        var featureToggleView = featureToggleClient.fetchFeatureToggle(featureToggleId);
         projectionRepository.upsert(featureToggleView);
         return featureToggleView;
     }

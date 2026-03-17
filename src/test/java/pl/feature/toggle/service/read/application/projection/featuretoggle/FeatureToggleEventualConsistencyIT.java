@@ -16,7 +16,6 @@ import pl.feature.toggle.service.model.featuretoggle.FeatureToggleStatus;
 import pl.feature.toggle.service.model.project.ProjectId;
 import pl.feature.toggle.service.model.project.ProjectStatus;
 import pl.feature.toggle.service.read.AbstractITTest;
-import pl.feature.toggle.service.read.application.port.in.EnvironmentProjection;
 import pl.feature.toggle.service.read.application.port.in.FeatureToggleProjection;
 import pl.feature.toggle.service.read.application.port.out.*;
 import pl.feature.toggle.service.value.FeatureToggleValueBuilder;
@@ -57,7 +56,7 @@ class FeatureToggleEventualConsistencyIT extends AbstractITTest {
     private ProjectProjectionRepository projectProjectionRepository;
 
     @MockitoBean
-    private WriteClient writeClient;
+    private FeatureToggleClient featureToggleClient;
 
     @TestConfiguration
     static class SyncAsyncConfig {
@@ -90,7 +89,7 @@ class FeatureToggleEventualConsistencyIT extends AbstractITTest {
         projectProjectionRepository.insert(projectView);
         environmentProjectionRepository.insert(environmentView);
 
-        when(writeClient.fetchFeatureToggle(featureToggleId)).thenReturn(fakeFeatureToggleViewBuilder()
+        when(featureToggleClient.fetchFeatureToggle(featureToggleId)).thenReturn(fakeFeatureToggleViewBuilder()
                 .id(featureToggleId)
                 .environmentId(envId)
                 .status(FeatureToggleStatus.ARCHIVED)
@@ -159,7 +158,7 @@ class FeatureToggleEventualConsistencyIT extends AbstractITTest {
         environmentProjectionRepository.insert(environmentView);
         featureToggleProjectionRepository.insert(featureToggleView);
 
-        when(writeClient.fetchFeatureToggle(featureToggleId)).thenReturn(fakeFeatureToggleViewBuilder()
+        when(featureToggleClient.fetchFeatureToggle(featureToggleId)).thenReturn(fakeFeatureToggleViewBuilder()
                 .id(featureToggleId)
                 .environmentId(envId)
                 .status(FeatureToggleStatus.ARCHIVED)

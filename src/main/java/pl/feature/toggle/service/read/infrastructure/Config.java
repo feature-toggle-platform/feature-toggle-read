@@ -30,10 +30,10 @@ class Config {
     }
 
     @Bean
-    FeatureToggleViewConsistency featureToggleViewConsistency(WriteClient writeClient,
+    FeatureToggleViewConsistency featureToggleViewConsistency(FeatureToggleClient featureToggleClient,
                                                               FeatureToggleProjectionRepository featureToggleProjectionRepository,
                                                               FeatureToggleQueryRepository queryRepository) {
-        return FeatureToggleProjectionFacade.featureToggleViewConsistency(writeClient,
+        return FeatureToggleProjectionFacade.featureToggleViewConsistency(featureToggleClient,
                 featureToggleProjectionRepository,
                 queryRepository);
     }

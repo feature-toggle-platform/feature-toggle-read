@@ -4,36 +4,27 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
-import pl.feature.toggle.service.model.environment.EnvironmentId;
-import pl.feature.toggle.service.model.project.ProjectId;
+import pl.feature.toggle.service.model.featuretoggle.FeatureToggleId;
 import pl.feature.toggle.service.model.security.correlation.CorrelationId;
 import pl.feature.toggle.service.model.security.correlation.CorrelationProvider;
-import pl.feature.toggle.service.read.application.port.out.ConfigurationClient;
-import pl.feature.toggle.service.read.domain.EnvironmentView;
-import pl.feature.toggle.service.read.domain.ProjectView;
+import pl.feature.toggle.service.read.application.port.out.FeatureToggleClient;
+import pl.feature.toggle.service.read.domain.FeatureToggleView;
 import pl.feature.toggle.service.read.infrastructure.out.rest.dto.EnvironmentViewDto;
-import pl.feature.toggle.service.read.infrastructure.out.rest.dto.ProjectViewDto;
+import pl.feature.toggle.service.read.infrastructure.out.rest.dto.FeatureToggleViewDto;
 import pl.feature.toggle.service.read.infrastructure.out.rest.exception.ConfigurationServiceResponseException;
 
 import java.util.Map;
 
 @AllArgsConstructor
-class RestConfigurationClient implements ConfigurationClient {
+class RestFeatureToggleClient implements FeatureToggleClient {
 
     private final RestClient restClient;
     private final CorrelationProvider correlationProvider;
 
     @Override
-    public ProjectView fetchProject(ProjectId projectId) {
-        var uri = "/internal/projects/{projectId}/view";
-        return fetch(uri, ProjectViewDto.class, projectId.idAsString())
-                .toDomain();
-    }
-
-    @Override
-    public EnvironmentView fetchEnvironment(ProjectId projectId, EnvironmentId environmentId) {
-        var uri = "/internal/projects/{projectId}/environments/{environmentId}/view";
-        return fetch(uri, EnvironmentViewDto.class, projectId.idAsString(), environmentId.idAsString())
+    public FeatureToggleView fetchFeatureToggle(FeatureToggleId featureToggleId) {
+        var uri = "/internal/feature-toggles/{featureToggleId}/view";
+        return fetch(uri, FeatureToggleViewDto.class, featureToggleId.idAsString())
                 .toDomain();
     }
 
@@ -71,5 +62,4 @@ class RestConfigurationClient implements ConfigurationClient {
         }
         return contextBuilder.build();
     }
-
 }

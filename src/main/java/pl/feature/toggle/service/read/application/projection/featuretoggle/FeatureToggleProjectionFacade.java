@@ -8,7 +8,7 @@ import pl.feature.toggle.service.read.application.port.in.FeatureToggleProjectio
 import pl.feature.toggle.service.read.application.port.in.FeatureToggleViewConsistency;
 import pl.feature.toggle.service.read.application.port.out.FeatureToggleProjectionRepository;
 import pl.feature.toggle.service.read.application.port.out.FeatureToggleQueryRepository;
-import pl.feature.toggle.service.read.application.port.out.WriteClient;
+import pl.feature.toggle.service.read.application.port.out.FeatureToggleClient;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public final class FeatureToggleProjectionFacade {
@@ -20,9 +20,9 @@ public final class FeatureToggleProjectionFacade {
         return new FeatureToggleProjectionHandler(featureToggleProjectionRepository, featureToggleQueryRepository, revisionProjectionApplier, eventPublisher);
     }
 
-    public static FeatureToggleViewConsistency featureToggleViewConsistency(WriteClient writeClient,
+    public static FeatureToggleViewConsistency featureToggleViewConsistency(FeatureToggleClient featureToggleClient,
                                                                             FeatureToggleProjectionRepository featureToggleProjectionRepository,
                                                                             FeatureToggleQueryRepository queryRepository) {
-        return new DefaultFeatureToggleViewConsistency(writeClient, featureToggleProjectionRepository, queryRepository);
+        return new DefaultFeatureToggleViewConsistency(featureToggleClient, featureToggleProjectionRepository, queryRepository);
     }
 }
