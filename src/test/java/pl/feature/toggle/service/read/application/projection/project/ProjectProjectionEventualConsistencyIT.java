@@ -27,6 +27,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration.APPLICATION_TASK_EXECUTOR_BEAN_NAME;
 import static pl.feature.toggle.service.contracts.event.project.ProjectCreated.projectCreatedEventBuilder;
 import static pl.feature.toggle.service.contracts.event.project.ProjectStatusChanged.projectStatusChangedEventBuilder;
+import static pl.feature.toggle.service.contracts.fake.event.FakeProjectCreatedBuilder.fakeProjectCreatedBuilder;
+import static pl.feature.toggle.service.contracts.fake.event.FakeProjectStatusChangedBuilder.fakeProjectStatusChangedBuilder;
 import static pl.feature.toggle.service.read.builder.FakeProjectViewBuilder.fakeProjectViewBuilder;
 
 @Import(ProjectProjectionEventualConsistencyIT.SyncAsyncConfig.class)
@@ -70,20 +72,20 @@ class ProjectProjectionEventualConsistencyIT extends AbstractITTest {
                 .revision(Revision.from(2))
                 .build());
 
-        var outOfOrderStatusChanged = projectStatusChangedEventBuilder()
-                .projectId(projectId.uuid())
-                .status(ProjectStatus.ARCHIVED.name())
-                .revision(Revision.from(2).value())
+        var outOfOrderStatusChanged = fakeProjectStatusChangedBuilder()
+                .withProjectId(projectId.uuid())
+                .withStatus(ProjectStatus.ARCHIVED.name())
+                .withRevision(Revision.from(2).value())
                 .build();
 
-        var createdLater = projectCreatedEventBuilder()
-                .projectId(projectId.uuid())
-                .status(ProjectStatus.ACTIVE.name())
-                .projectName("TEST")
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .projectDescription("TEST_DESCRIPTION")
-                .revision(Revision.initialRevision().value())
+        var createdLater = fakeProjectCreatedBuilder()
+                .withProjectId(projectId.uuid())
+                .withStatus(ProjectStatus.ACTIVE.name())
+                .withProjectName("TEST")
+                .withCreatedAt(LocalDateTime.now())
+                .withUpdatedAt(LocalDateTime.now())
+                .withProjectDescription("TEST_DESCRIPTION")
+                .withRevision(Revision.initialRevision().value())
                 .build();
 
         // when
@@ -122,10 +124,10 @@ class ProjectProjectionEventualConsistencyIT extends AbstractITTest {
                 .revision(Revision.from(5))
                 .build());
 
-        var gapEvent = projectStatusChangedEventBuilder()
-                .projectId(projectId.uuid())
-                .status(ProjectStatus.ARCHIVED.name())
-                .revision(Revision.from(5).value())
+        var gapEvent = fakeProjectStatusChangedBuilder()
+                .withProjectId(projectId.uuid())
+                .withStatus(ProjectStatus.ARCHIVED.name())
+                .withRevision(Revision.from(5).value())
                 .build();
 
         // when

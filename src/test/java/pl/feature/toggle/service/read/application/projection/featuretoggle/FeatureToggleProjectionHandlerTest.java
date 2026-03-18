@@ -21,6 +21,10 @@ import static pl.feature.toggle.service.contracts.event.featuretoggle.FeatureTog
 import static pl.feature.toggle.service.contracts.event.featuretoggle.FeatureToggleStatusChanged.featureToggleStatusChangedBuilder;
 import static pl.feature.toggle.service.contracts.event.featuretoggle.FeatureToggleUpdated.featureToggleUpdatedEventBuilder;
 import static pl.feature.toggle.service.contracts.event.featuretoggle.FeatureToggleValueChanged.featureToggleValueChangedBuilder;
+import static pl.feature.toggle.service.contracts.fake.event.FakeFeatureToggleCreatedBuilder.fakeFeatureToggleCreatedBuilder;
+import static pl.feature.toggle.service.contracts.fake.event.FakeFeatureToggleStatusChangedBuilder.fakeFeatureToggleStatusChangedBuilder;
+import static pl.feature.toggle.service.contracts.fake.event.FakeFeatureToggleUpdatedBuilder.fakeFeatureToggleUpdatedBuilder;
+import static pl.feature.toggle.service.contracts.fake.event.FakeFeatureToggleValueChangedBuilder.fakeFeatureToggleValueChangedBuilder;
 import static pl.feature.toggle.service.read.builder.FakeFeatureToggleViewBuilder.fakeFeatureToggleViewBuilder;
 
 class FeatureToggleProjectionHandlerTest extends AbstractUnitTest {
@@ -48,16 +52,16 @@ class FeatureToggleProjectionHandlerTest extends AbstractUnitTest {
 
         var featureToggleId = FeatureToggleId.create();
 
-        var event = featureToggleCreatedEventBuilder()
-                .id(featureToggleId.uuid())
-                .name("TEST")
-                .environmentId(EnvironmentId.create().uuid())
-                .description("TEST_DESCRIPTION")
-                .value("TRUE")
-                .type("BOOLEAN")
-                .createdAt(LocalDateTime.now())
-                .status(FeatureToggleStatus.ACTIVE.name())
-                .revision(Revision.initialRevision().value())
+        var event = fakeFeatureToggleCreatedBuilder()
+                .withId(featureToggleId.uuid())
+                .withName("TEST")
+                .withEnvironmentId(EnvironmentId.create().uuid())
+                .withDescription("TEST_DESCRIPTION")
+                .withValue("TRUE")
+                .withType("BOOLEAN")
+                .withCreatedAt(LocalDateTime.now())
+                .withStatus(FeatureToggleStatus.ACTIVE.name())
+                .withRevision(Revision.initialRevision().value())
                 .build();
 
         // when
@@ -83,9 +87,9 @@ class FeatureToggleProjectionHandlerTest extends AbstractUnitTest {
         featureToggleViewProjectionRepositorySpy.expectNoMarkInconsistent();
         applicationEventPublishedSpy.expectNoEvents();
 
-        var event = featureToggleStatusChangedBuilder()
-                .status(ProjectStatus.ARCHIVED.name())
-                .revision(existing.revision().next().value())
+        var event = fakeFeatureToggleStatusChangedBuilder()
+                .withStatus(ProjectStatus.ARCHIVED.name())
+                .withRevision(existing.revision().next().value())
                 .build();
 
         // when
@@ -110,10 +114,10 @@ class FeatureToggleProjectionHandlerTest extends AbstractUnitTest {
         featureToggleViewProjectionRepositorySpy.expectNoMarkInconsistent();
         applicationEventPublishedSpy.expectNoEvents();
 
-        var event = featureToggleValueChangedBuilder()
-                .type(FeatureToggleValueType.BOOLEAN.name())
-                .value(FeatureToggleValueBuilder.bool(false).asText())
-                .revision(existing.revision().next().value())
+        var event = fakeFeatureToggleValueChangedBuilder()
+                .withType(FeatureToggleValueType.BOOLEAN.name())
+                .withValue(FeatureToggleValueBuilder.bool(false).asText())
+                .withRevision(existing.revision().next().value())
                 .build();
 
         // when
@@ -139,10 +143,10 @@ class FeatureToggleProjectionHandlerTest extends AbstractUnitTest {
         featureToggleViewProjectionRepositorySpy.expectNoMarkInconsistent();
         applicationEventPublishedSpy.expectNoEvents();
 
-        var event = featureToggleUpdatedEventBuilder()
-                .name("new name")
-                .description("new description")
-                .revision(existing.revision().next().value())
+        var event = fakeFeatureToggleUpdatedBuilder()
+                .withName("new name")
+                .withDescription("new description")
+                .withRevision(existing.revision().next().value())
                 .build();
 
         // when
@@ -167,10 +171,10 @@ class FeatureToggleProjectionHandlerTest extends AbstractUnitTest {
         featureToggleViewProjectionRepositorySpy.expectNoUpdates();
         featureToggleViewProjectionRepositorySpy.markInconsistentIfNotMarkedReturns(true);
 
-        var event = featureToggleStatusChangedBuilder()
-                .id(existing.id().uuid())
-                .status(ProjectStatus.ARCHIVED.name())
-                .revision(5)
+        var event = fakeFeatureToggleStatusChangedBuilder()
+                .withId(existing.id().uuid())
+                .withStatus(ProjectStatus.ARCHIVED.name())
+                .withRevision(5)
                 .build();
 
         // when

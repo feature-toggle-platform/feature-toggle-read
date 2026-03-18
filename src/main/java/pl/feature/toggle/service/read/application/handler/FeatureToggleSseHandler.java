@@ -23,6 +23,6 @@ class FeatureToggleSseHandler implements FeatureToggleSseUseCase {
         sseConnection.onClose(subscription::unsubscribe);
         sseConnection.onError(ex -> subscription.unsubscribe());
         sseConnection.send(SseEvent.connectedEvent());
-        log.info("SSE connection established for projectId={}, environmentId={}", projectId.uuid(), environmentId.uuid());
+        log.info("SSE connection established for projectId={}, environmentId={}", projectId, environmentId);
     }
 }

@@ -17,6 +17,10 @@ import static pl.feature.toggle.service.contracts.event.environment.EnvironmentC
 import static pl.feature.toggle.service.contracts.event.environment.EnvironmentStatusChanged.environmentStatusChangedEventBuilder;
 import static pl.feature.toggle.service.contracts.event.environment.EnvironmentTypeChanged.environmentTypeChangedBuilder;
 import static pl.feature.toggle.service.contracts.event.environment.EnvironmentUpdated.environmentUpdatedEventBuilder;
+import static pl.feature.toggle.service.contracts.fake.event.FakeEnvironmentCreatedBuilder.fakeEnvironmentCreatedBuilder;
+import static pl.feature.toggle.service.contracts.fake.event.FakeEnvironmentStatusChangedBuilder.fakeEnvironmentStatusChangedBuilder;
+import static pl.feature.toggle.service.contracts.fake.event.FakeEnvironmentTypeChangedBuilder.fakeEnvironmentTypeChangedBuilder;
+import static pl.feature.toggle.service.contracts.fake.event.FakeEnvironmentUpdatedBuilder.fakeEnvironmentUpdatedBuilder;
 import static pl.feature.toggle.service.read.builder.FakeEnvironmentViewBuilder.fakeEnvironmentViewBuilder;
 
 class EnvironmentProjectionHandlerTest extends AbstractUnitTest {
@@ -45,13 +49,13 @@ class EnvironmentProjectionHandlerTest extends AbstractUnitTest {
         var projectId = ProjectId.create();
         var envId = EnvironmentId.create();
 
-        var event = environmentCreatedEventBuilder()
-                .projectId(projectId.uuid())
-                .environmentId(envId.uuid())
-                .createdAt(LocalDateTime.now())
-                .environmentName("test")
-                .status(EnvironmentStatus.ACTIVE.name())
-                .revision(Revision.initialRevision().value())
+        var event = fakeEnvironmentCreatedBuilder()
+                .withProjectId(projectId.uuid())
+                .withEnvironmentId(envId.uuid())
+                .withCreatedAt(LocalDateTime.now())
+                .withEnvironmentName("test")
+                .withStatus(EnvironmentStatus.ACTIVE.name())
+                .withRevision(Revision.initialRevision().value())
                 .build();
 
         // when
@@ -79,11 +83,11 @@ class EnvironmentProjectionHandlerTest extends AbstractUnitTest {
         environmentViewProjectionRepositorySpy.expectNoMarkInconsistent();
         applicationEventPublishedSpy.expectNoEvents();
 
-        var event = environmentStatusChangedEventBuilder()
-                .projectId(existingEnv.projectId().uuid())
-                .environmentId(existingEnv.id().uuid())
-                .status(EnvironmentStatus.ARCHIVED.name())
-                .revision(existingEnv.revision().next().value())
+        var event = fakeEnvironmentStatusChangedBuilder()
+                .withProjectId(existingEnv.projectId().uuid())
+                .withEnvironmentId(existingEnv.id().uuid())
+                .withStatus(EnvironmentStatus.ARCHIVED.name())
+                .withRevision(existingEnv.revision().next().value())
                 .build();
 
         // when
@@ -109,11 +113,11 @@ class EnvironmentProjectionHandlerTest extends AbstractUnitTest {
         environmentViewProjectionRepositorySpy.expectNoMarkInconsistent();
         applicationEventPublishedSpy.expectNoEvents();
 
-        var event = environmentTypeChangedBuilder()
-                .projectId(existingEnv.projectId().uuid())
-                .environmentId(existingEnv.id().uuid())
-                .type("DEV")
-                .revision(existingEnv.revision().next().value())
+        var event = fakeEnvironmentTypeChangedBuilder()
+                .withProjectId(existingEnv.projectId().uuid())
+                .withEnvironmentId(existingEnv.id().uuid())
+                .withType("DEV")
+                .withRevision(existingEnv.revision().next().value())
                 .build();
 
         // when
@@ -139,11 +143,11 @@ class EnvironmentProjectionHandlerTest extends AbstractUnitTest {
         environmentViewProjectionRepositorySpy.expectNoMarkInconsistent();
         applicationEventPublishedSpy.expectNoEvents();
 
-        var event = environmentUpdatedEventBuilder()
-                .projectId(existingEnv.projectId().uuid())
-                .environmentId(existingEnv.id().uuid())
-                .environmentName("AFTER")
-                .revision(existingEnv.revision().next().value())
+        var event = fakeEnvironmentUpdatedBuilder()
+                .withProjectId(existingEnv.projectId().uuid())
+                .withEnvironmentId(existingEnv.id().uuid())
+                .withEnvironmentName("AFTER")
+                .withRevision(existingEnv.revision().next().value())
                 .build();
 
         // when
@@ -167,11 +171,11 @@ class EnvironmentProjectionHandlerTest extends AbstractUnitTest {
         environmentViewProjectionRepositorySpy.expectNoUpdates();
         environmentViewProjectionRepositorySpy.markInconsistentIfNotMarkedReturns(true);
 
-        var event = environmentStatusChangedEventBuilder()
-                .projectId(existing.projectId().uuid())
-                .environmentId(existing.id().uuid())
-                .status(EnvironmentStatus.ARCHIVED.name())
-                .revision(5)
+        var event = fakeEnvironmentStatusChangedBuilder()
+                .withProjectId(existing.projectId().uuid())
+                .withEnvironmentId(existing.id().uuid())
+                .withStatus(EnvironmentStatus.ARCHIVED.name())
+                .withRevision(5)
                 .build();
 
         // when

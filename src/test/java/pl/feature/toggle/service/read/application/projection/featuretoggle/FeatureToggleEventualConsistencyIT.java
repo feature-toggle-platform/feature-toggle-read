@@ -30,6 +30,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration.APPLICATION_TASK_EXECUTOR_BEAN_NAME;
 import static pl.feature.toggle.service.contracts.event.featuretoggle.FeatureToggleCreated.featureToggleCreatedEventBuilder;
 import static pl.feature.toggle.service.contracts.event.featuretoggle.FeatureToggleStatusChanged.featureToggleStatusChangedBuilder;
+import static pl.feature.toggle.service.contracts.fake.event.FakeFeatureToggleCreatedBuilder.fakeFeatureToggleCreatedBuilder;
+import static pl.feature.toggle.service.contracts.fake.event.FakeFeatureToggleStatusChangedBuilder.fakeFeatureToggleStatusChangedBuilder;
 import static pl.feature.toggle.service.read.builder.FakeEnvironmentViewBuilder.fakeEnvironmentViewBuilder;
 import static pl.feature.toggle.service.read.builder.FakeFeatureToggleViewBuilder.fakeFeatureToggleViewBuilder;
 import static pl.feature.toggle.service.read.builder.FakeProjectViewBuilder.fakeProjectViewBuilder;
@@ -96,22 +98,22 @@ class FeatureToggleEventualConsistencyIT extends AbstractITTest {
                 .revision(Revision.from(2))
                 .build());
 
-        var outOfOrderStatusChanged = featureToggleStatusChangedBuilder()
-                .environmentId(envId.uuid())
-                .id(featureToggleId.uuid())
-                .status(FeatureToggleStatus.ARCHIVED.name())
-                .revision(Revision.from(2).value())
+        var outOfOrderStatusChanged = fakeFeatureToggleStatusChangedBuilder()
+                .withEnvironmentId(envId.uuid())
+                .withId(featureToggleId.uuid())
+                .withStatus(FeatureToggleStatus.ARCHIVED.name())
+                .withRevision(Revision.from(2).value())
                 .build();
 
-        var createdLater = featureToggleCreatedEventBuilder()
-                .id(featureToggleId.uuid())
-                .environmentId(envId.uuid())
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .type("BOOLEAN")
-                .value(FeatureToggleValueBuilder.bool(true).asText())
-                .status(EnvironmentStatus.ACTIVE.name())
-                .revision(Revision.initialRevision().value())
+        var createdLater = fakeFeatureToggleCreatedBuilder()
+                .withId(featureToggleId.uuid())
+                .withEnvironmentId(envId.uuid())
+                .withCreatedAt(LocalDateTime.now())
+                .withUpdatedAt(LocalDateTime.now())
+                .withType("BOOLEAN")
+                .withValue(FeatureToggleValueBuilder.bool(true).asText())
+                .withStatus(EnvironmentStatus.ACTIVE.name())
+                .withRevision(Revision.initialRevision().value())
                 .build();
 
         // when
@@ -165,11 +167,11 @@ class FeatureToggleEventualConsistencyIT extends AbstractITTest {
                 .revision(Revision.from(5))
                 .build());
 
-        var gapEvent = featureToggleStatusChangedBuilder()
-                .environmentId(envId.uuid())
-                .id(featureToggleId.uuid())
-                .status(FeatureToggleStatus.ARCHIVED.name())
-                .revision(Revision.from(5).value())
+        var gapEvent = fakeFeatureToggleStatusChangedBuilder()
+                .withEnvironmentId(envId.uuid())
+                .withId(featureToggleId.uuid())
+                .withStatus(FeatureToggleStatus.ARCHIVED.name())
+                .withRevision(Revision.from(5).value())
                 .build();
 
         // when

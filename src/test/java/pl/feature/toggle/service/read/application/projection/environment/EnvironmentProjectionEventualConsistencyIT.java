@@ -26,11 +26,11 @@ import java.util.concurrent.Executor;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration.APPLICATION_TASK_EXECUTOR_BEAN_NAME;
-import static pl.feature.toggle.service.contracts.event.environment.EnvironmentCreated.environmentCreatedEventBuilder;
 import static pl.feature.toggle.service.contracts.event.environment.EnvironmentStatusChanged.environmentStatusChangedEventBuilder;
+import static pl.feature.toggle.service.contracts.fake.event.FakeEnvironmentCreatedBuilder.fakeEnvironmentCreatedBuilder;
+import static pl.feature.toggle.service.contracts.fake.event.FakeEnvironmentStatusChangedBuilder.fakeEnvironmentStatusChangedBuilder;
 import static pl.feature.toggle.service.read.builder.FakeEnvironmentViewBuilder.fakeEnvironmentViewBuilder;
 import static pl.feature.toggle.service.read.builder.FakeProjectViewBuilder.fakeProjectViewBuilder;
 
@@ -84,22 +84,22 @@ class EnvironmentProjectionEventualConsistencyIT extends AbstractITTest {
                 .revision(Revision.from(2))
                 .build());
 
-        var outOfOrderStatusChanged = environmentStatusChangedEventBuilder()
-                .projectId(projectId.uuid())
-                .environmentId(envId.uuid())
-                .status(EnvironmentStatus.ARCHIVED.name())
-                .revision(Revision.from(2).value())
+        var outOfOrderStatusChanged = fakeEnvironmentStatusChangedBuilder()
+                .withProjectId(projectId.uuid())
+                .withEnvironmentId(envId.uuid())
+                .withStatus(EnvironmentStatus.ARCHIVED.name())
+                .withRevision(Revision.from(2).value())
                 .build();
 
-        var createdLater = environmentCreatedEventBuilder()
-                .projectId(projectId.uuid())
-                .environmentId(envId.uuid())
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .type("TEST")
-                .environmentName("test")
-                .status(EnvironmentStatus.ACTIVE.name())
-                .revision(Revision.initialRevision().value())
+        var createdLater = fakeEnvironmentCreatedBuilder()
+                .withProjectId(projectId.uuid())
+                .withEnvironmentId(envId.uuid())
+                .withCreatedAt(LocalDateTime.now())
+                .withUpdatedAt(LocalDateTime.now())
+                .withType("TEST")
+                .withEnvironmentName("test")
+                .withStatus(EnvironmentStatus.ACTIVE.name())
+                .withRevision(Revision.initialRevision().value())
                 .build();
 
         // when
@@ -146,11 +146,11 @@ class EnvironmentProjectionEventualConsistencyIT extends AbstractITTest {
                 .revision(Revision.from(5))
                 .build());
 
-        var gapEvent = environmentStatusChangedEventBuilder()
-                .projectId(projectId.uuid())
-                .environmentId(envId.uuid())
-                .status(EnvironmentStatus.ARCHIVED.name())
-                .revision(Revision.from(5).value())
+        var gapEvent = fakeEnvironmentStatusChangedBuilder()
+                .withProjectId(projectId.uuid())
+                .withEnvironmentId(envId.uuid())
+                .withStatus(EnvironmentStatus.ARCHIVED.name())
+                .withRevision(Revision.from(5).value())
                 .build();
 
         // when

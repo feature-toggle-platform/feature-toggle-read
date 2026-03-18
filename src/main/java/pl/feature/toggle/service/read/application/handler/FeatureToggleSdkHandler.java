@@ -7,6 +7,8 @@ import pl.feature.toggle.service.read.application.port.in.FeatureToggleSdkUseCas
 import pl.feature.toggle.service.read.application.port.out.EnvironmentQueryRepository;
 import pl.feature.toggle.service.read.application.port.out.FeatureToggleQueryRepository;
 import pl.feature.toggle.service.read.application.port.out.ProjectQueryRepository;
+import pl.feature.toggle.service.read.domain.exception.EnvironmentNotFoundException;
+import pl.feature.toggle.service.read.domain.exception.ProjectNotFoundException;
 import pl.feature.toggle.service.read.infrastructure.in.rest.sdk.dto.FeatureToggleSdkSnapshot;
 
 import java.time.Clock;
@@ -23,10 +25,10 @@ class FeatureToggleSdkHandler implements FeatureToggleSdkUseCase {
     @Override
     public FeatureToggleSdkSnapshot fetchSnapshot(ProjectId projectId, EnvironmentId environmentId) {
         var projectView = projectQueryRepository.find(projectId)
-                .orElseThrow(() -> new IllegalStateException("Project not found: " + projectId));
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
         var environmentView = environmentQueryRepository.find(projectId, environmentId)
-                .orElseThrow(() -> new IllegalStateException("Environment not found: " + environmentId));
+                .orElseThrow(() -> new EnvironmentNotFoundException(environmentId));
 
         var featureToggleViews = featureToggleQueryRepository.find(projectId, environmentId);
 

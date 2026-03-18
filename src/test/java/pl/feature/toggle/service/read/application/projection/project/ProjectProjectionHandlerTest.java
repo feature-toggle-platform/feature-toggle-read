@@ -16,6 +16,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static pl.feature.toggle.service.contracts.event.project.ProjectCreated.projectCreatedEventBuilder;
 import static pl.feature.toggle.service.contracts.event.project.ProjectStatusChanged.projectStatusChangedEventBuilder;
 import static pl.feature.toggle.service.contracts.event.project.ProjectUpdated.projectUpdatedEventBuilder;
+import static pl.feature.toggle.service.contracts.fake.event.FakeProjectCreatedBuilder.fakeProjectCreatedBuilder;
+import static pl.feature.toggle.service.contracts.fake.event.FakeProjectStatusChangedBuilder.fakeProjectStatusChangedBuilder;
+import static pl.feature.toggle.service.contracts.fake.event.FakeProjectUpdatedBuilder.fakeProjectUpdatedBuilder;
 import static pl.feature.toggle.service.read.builder.FakeProjectViewBuilder.fakeProjectViewBuilder;
 
 class ProjectProjectionHandlerTest extends AbstractUnitTest {
@@ -43,13 +46,13 @@ class ProjectProjectionHandlerTest extends AbstractUnitTest {
 
         var projectId = ProjectId.create();
 
-        var event = projectCreatedEventBuilder()
-                .projectId(projectId.uuid())
-                .projectName("TEST")
-                .projectDescription("TEST_DESCRIPTION")
-                .createdAt(LocalDateTime.now())
-                .status(ProjectStatus.ACTIVE.name())
-                .revision(Revision.initialRevision().value())
+        var event = fakeProjectCreatedBuilder()
+                .withProjectId(projectId.uuid())
+                .withProjectName("TEST")
+                .withProjectDescription("TEST_DESCRIPTION")
+                .withCreatedAt(LocalDateTime.now())
+                .withStatus(ProjectStatus.ACTIVE.name())
+                .withRevision(Revision.initialRevision().value())
                 .build();
 
         // when
@@ -75,10 +78,10 @@ class ProjectProjectionHandlerTest extends AbstractUnitTest {
         projectViewProjectionRepositorySpy.expectNoMarkInconsistent();
         applicationEventPublishedSpy.expectNoEvents();
 
-        var event = projectStatusChangedEventBuilder()
-                .projectId(existing.id().uuid())
-                .status(ProjectStatus.ARCHIVED.name())
-                .revision(existing.revision().next().value())
+        var event = fakeProjectStatusChangedBuilder()
+                .withProjectId(existing.id().uuid())
+                .withStatus(ProjectStatus.ARCHIVED.name())
+                .withRevision(existing.revision().next().value())
                 .build();
 
         // when
@@ -103,11 +106,11 @@ class ProjectProjectionHandlerTest extends AbstractUnitTest {
         projectViewProjectionRepositorySpy.expectNoMarkInconsistent();
         applicationEventPublishedSpy.expectNoEvents();
 
-        var event = projectUpdatedEventBuilder()
-                .projectName("NEW NAME")
-                .projectDescription("NEW DESCRIPTION")
-                .projectId(existing.id().uuid())
-                .revision(existing.revision().next().value())
+        var event = fakeProjectUpdatedBuilder()
+                .withProjectName("NEW NAME")
+                .withProjectDescription("NEW DESCRIPTION")
+                .withProjectId(existing.id().uuid())
+                .withRevision(existing.revision().next().value())
                 .build();
 
         //when
@@ -132,10 +135,10 @@ class ProjectProjectionHandlerTest extends AbstractUnitTest {
         projectViewProjectionRepositorySpy.expectNoUpdates();
         projectViewProjectionRepositorySpy.markInconsistentIfNotMarkedReturns(true);
 
-        var event = projectStatusChangedEventBuilder()
-                .projectId(existing.id().uuid())
-                .status(ProjectStatus.ARCHIVED.name())
-                .revision(5)
+        var event = fakeProjectStatusChangedBuilder()
+                .withProjectId(existing.id().uuid())
+                .withStatus(ProjectStatus.ARCHIVED.name())
+                .withRevision(5)
                 .build();
 
         // when
