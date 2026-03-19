@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClient;
-import pl.feature.toggle.service.model.security.correlation.CorrelationProvider;
+import pl.feature.toggle.service.web.correlation.CorrelationProvider;
 import pl.feature.toggle.service.read.application.port.out.ConfigurationClient;
 import pl.feature.toggle.service.read.application.port.out.FeatureToggleClient;
 

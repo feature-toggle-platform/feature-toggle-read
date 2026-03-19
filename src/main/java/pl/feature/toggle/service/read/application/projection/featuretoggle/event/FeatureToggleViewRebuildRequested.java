@@ -1,7 +1,7 @@
 package pl.feature.toggle.service.read.application.projection.featuretoggle.event;
 
 import pl.feature.toggle.service.model.featuretoggle.FeatureToggleId;
-import pl.feature.toggle.service.model.security.correlation.CorrelationId;
+import pl.feature.toggle.service.web.correlation.CorrelationId;
 
 public record FeatureToggleViewRebuildRequested(
         FeatureToggleId featureToggleId,
