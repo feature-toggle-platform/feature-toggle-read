@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClient;
+import pl.feature.toggle.service.web.client.InternalRestClient;
 import pl.feature.toggle.service.web.correlation.CorrelationProvider;
 import pl.feature.toggle.service.read.application.port.out.ConfigurationClient;
 import pl.feature.toggle.service.read.application.port.out.FeatureToggleClient;
@@ -13,29 +14,13 @@ import pl.feature.toggle.service.read.application.port.out.FeatureToggleClient;
 class RestOutboundConfig {
 
     @Bean
-    @Qualifier("configurationRestClient")
-    RestClient configurationRestClient(@Value("${client.configuration.base-url}") String baseUrl) {
-        return RestClient.builder()
-                .baseUrl(baseUrl)
-                .build();
+    FeatureToggleClient writeClient(InternalRestClient internalRestClient) {
+        return new RestFeatureToggleClient(internalRestClient);
     }
 
     @Bean
-    @Qualifier("featureToggleRestClient")
-    RestClient featureToggleRestClient(@Value("${client.feature-toggle.base-url}") String baseUrl) {
-        return RestClient.builder()
-                .baseUrl(baseUrl)
-                .build();
-    }
-
-    @Bean
-    FeatureToggleClient writeClient(@Qualifier("featureToggleRestClient") RestClient restClient, CorrelationProvider correlationProvider) {
-        return new RestFeatureToggleClient(restClient, correlationProvider);
-    }
-
-    @Bean
-    ConfigurationClient configurationClient(@Qualifier("configurationRestClient") RestClient restClient, CorrelationProvider correlationProvider) {
-        return new RestConfigurationClient(restClient, correlationProvider);
+    ConfigurationClient configurationClient(InternalRestClient internalRestClient) {
+        return new RestConfigurationClient(internalRestClient);
     }
 
 }
