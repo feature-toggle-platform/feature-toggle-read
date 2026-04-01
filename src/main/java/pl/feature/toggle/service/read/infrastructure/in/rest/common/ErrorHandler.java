@@ -2,8 +2,8 @@ package pl.feature.toggle.service.read.infrastructure.in.rest.common;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pl.feature.toggle.service.read.domain.exception.EnvironmentNotFoundException;
 import pl.feature.toggle.service.read.domain.exception.FeatureToggleNotFoundException;
 import pl.feature.toggle.service.read.domain.exception.ProjectNotFoundException;
@@ -14,7 +14,7 @@ import pl.feature.toggle.service.web.correlation.CorrelationProvider;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static pl.feature.toggle.service.web.ErrorCode.*;
 
-@ControllerAdvice
+@RestControllerAdvice
 @AllArgsConstructor
 class ErrorHandler {
 
