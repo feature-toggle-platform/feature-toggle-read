@@ -1,0 +1,116 @@
+package com.configly.read.builder;
+
+import com.configly.model.CreatedAt;
+import com.configly.model.Revision;
+import com.configly.model.UpdatedAt;
+import com.configly.model.environment.EnvironmentId;
+import com.configly.model.environment.EnvironmentName;
+import com.configly.model.environment.EnvironmentStatus;
+import com.configly.model.project.ProjectId;
+import com.configly.read.domain.EnvironmentView;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+public class FakeEnvironmentViewBuilder {
+
+    private EnvironmentId id;
+    private ProjectId projectId;
+    private EnvironmentName name;
+    private String type;
+    private EnvironmentStatus status;
+    private CreatedAt createdAt;
+    private UpdatedAt updatedAt;
+    private Revision revision;
+    private boolean consistent;
+
+    private FakeEnvironmentViewBuilder() {
+        id = EnvironmentId.create();
+        projectId = ProjectId.create();
+        name = EnvironmentName.create("env" + UUID.randomUUID());
+        type = "DEFAULT";
+        status = EnvironmentStatus.ACTIVE;
+        createdAt = CreatedAt.now();
+        updatedAt = UpdatedAt.now();
+        revision = Revision.initialRevision();
+        consistent = true;
+    }
+
+    public static FakeEnvironmentViewBuilder fakeEnvironmentViewBuilder() {
+        return new FakeEnvironmentViewBuilder();
+    }
+
+    public FakeEnvironmentViewBuilder id(EnvironmentId id) {
+        this.id = id;
+        return this;
+    }
+
+    public FakeEnvironmentViewBuilder projectId(ProjectId projectId) {
+        this.projectId = projectId;
+        return this;
+    }
+
+    public FakeEnvironmentViewBuilder name(EnvironmentName name) {
+        this.name = name;
+        return this;
+    }
+
+    public FakeEnvironmentViewBuilder name(String name) {
+        this.name = EnvironmentName.create(name);
+        return this;
+    }
+
+    public FakeEnvironmentViewBuilder type(String type) {
+        this.type = type;
+        return this;
+    }
+
+    public FakeEnvironmentViewBuilder status(EnvironmentStatus status) {
+        this.status = status;
+        return this;
+    }
+
+    public FakeEnvironmentViewBuilder createdAt(CreatedAt createdAt) {
+        this.createdAt = createdAt;
+        return this;
+    }
+
+    public FakeEnvironmentViewBuilder createdAt(LocalDateTime createdAt) {
+        this.createdAt = CreatedAt.of(createdAt);
+        return this;
+    }
+
+    public FakeEnvironmentViewBuilder updatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = UpdatedAt.of(updatedAt);
+        return this;
+    }
+
+    public FakeEnvironmentViewBuilder updatedAt(UpdatedAt updatedAt) {
+        this.updatedAt = updatedAt;
+        return this;
+    }
+
+    public FakeEnvironmentViewBuilder revision(Revision revision) {
+        this.revision = revision;
+        return this;
+    }
+
+    public FakeEnvironmentViewBuilder consistent(boolean consistent) {
+        this.consistent = consistent;
+        return this;
+    }
+
+    public EnvironmentView build() {
+        return new EnvironmentView(
+                id,
+                projectId,
+                name,
+                type,
+                status,
+                createdAt,
+                updatedAt,
+                revision,
+                consistent
+        );
+    }
+}

@@ -1,0 +1,106 @@
+package com.configly.read.infrastructure.in.kafka;
+
+import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.serialization.StringDeserializer;
+import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.kafka.autoconfigure.KafkaProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
+import org.springframework.kafka.core.*;
+import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
+import org.springframework.kafka.listener.DefaultErrorHandler;
+import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
+import org.springframework.kafka.support.serializer.JacksonJsonDeserializer;
+import org.springframework.kafka.support.serializer.JacksonJsonSerializer;
+import org.springframework.util.backoff.FixedBackOff;
+import com.configly.contracts.shared.IntegrationEvent;
+import com.configly.event.processing.api.EventProcessor;
+import com.configly.read.application.handler.FeatureToggleSseNotifier;
+import com.configly.read.application.port.in.EnvironmentProjection;
+import com.configly.read.application.port.in.FeatureToggleProjection;
+import com.configly.read.application.port.in.ProjectProjection;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.apache.kafka.clients.consumer.ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG;
+import static org.apache.kafka.clients.consumer.ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG;
+import static org.apache.kafka.clients.producer.ProducerConfig.BOOTSTRAP_SERVERS_CONFIG;
+import static org.springframework.kafka.listener.ContainerProperties.AckMode.MANUAL_IMMEDIATE;
+
+@Configuration("kafkaConfig")
+@Slf4j
+class Config {
+
+    @Autowired
+    private Environment environment;
+
+    @Bean
+    ConsumerFactory<String, IntegrationEvent> consumerFactory() {
+        Map<String, Object> cfg = new HashMap<>();
+        cfg.put(BOOTSTRAP_SERVERS_CONFIG, environment.getProperty("spring.kafka.bootstrap-servers"));
+        cfg.put(KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        cfg.put(VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
+        cfg.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JacksonJsonDeserializer.class);
+        cfg.put(JacksonJsonDeserializer.TRUSTED_PACKAGES, "*");
+        cfg.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
+        cfg.put(ConsumerConfig.GROUP_ID_CONFIG, environment.getProperty("spring.kafka.consumer.group-id"));
+        return new DefaultKafkaConsumerFactory<>(cfg);
+    }
+
+    @Bean
+    ProducerFactory<String, IntegrationEvent> dltProducerFactory(KafkaProperties props) {
+        var cfg = new HashMap<>(props.buildProducerProperties());
+        cfg.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        cfg.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JacksonJsonSerializer.class);
+        return new DefaultKafkaProducerFactory<>(cfg);
+    }
+
+    @Bean
+    KafkaTemplate<String, IntegrationEvent> dltKafkaTemplate(ProducerFactory<String, IntegrationEvent> dltProducerFactory) {
+        return new KafkaTemplate<>(dltProducerFactory);
+    }
+
+    @Bean
+    ConcurrentKafkaListenerContainerFactory<String, IntegrationEvent> kafkaListenerContainerFactory(
+            ConsumerFactory<String, IntegrationEvent> consumerFactory,
+            KafkaTemplate<String, IntegrationEvent> kafkaTemplate
+    ) {
+        var factory = new ConcurrentKafkaListenerContainerFactory<String, IntegrationEvent>();
+        factory.setConsumerFactory(consumerFactory);
+        factory.getContainerProperties()
+                .setAckMode(MANUAL_IMMEDIATE);
+
+        var recoverer = new DeadLetterPublishingRecoverer(kafkaTemplate,
+                (record, ex) -> new TopicPartition(record.topic() + ".DLT", -1));
+        var backOff = new FixedBackOff(5000, 3);
+        var errorHandler = new DefaultErrorHandler(recoverer, backOff);
+        errorHandler.setRetryListeners((record, ex, deliveryAttempt) -> {
+            log.error(
+                    "Kafka processing failed. attempt={} topic={} partition={} offset={} key={}",
+                    deliveryAttempt,
+                    record.topic(), record.partition(), record.offset(), record.key(),
+                    ex
+            );
+        });
+        factory.setCommonErrorHandler(errorHandler);
+
+        return factory;
+    }
+
+    @Bean
+    KafkaEventConsumer kafkaEventConsumer(FeatureToggleProjection featureToggleProjection,
+                                          ProjectProjection projectProjection,
+                                          EnvironmentProjection environmentProjection,
+                                          EventProcessor eventProcessor,
+                                          FeatureToggleSseNotifier featureToggleSseNotifier) {
+        return new KafkaEventConsumer(featureToggleProjection, projectProjection, environmentProjection, eventProcessor, featureToggleSseNotifier);
+    }
+
+}
