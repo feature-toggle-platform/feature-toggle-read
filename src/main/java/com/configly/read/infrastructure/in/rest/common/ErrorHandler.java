@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.configly.read.domain.exception.EnvironmentNotFoundException;
 import com.configly.read.domain.exception.FeatureToggleNotFoundException;
 import com.configly.read.domain.exception.ProjectNotFoundException;
-import com.configly.web.ErrorCode;
-import com.configly.web.ErrorResponse;
-import com.configly.web.correlation.CorrelationProvider;
+import com.configly.web.model.ErrorCode;
+import com.configly.web.model.ErrorResponse;
+import com.configly.web.model.correlation.CorrelationProvider;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static com.configly.web.ErrorCode.*;
+import static com.configly.web.model.ErrorCode.*;
 
 @RestControllerAdvice
 @AllArgsConstructor

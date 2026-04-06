@@ -14,7 +14,7 @@ import com.configly.event.processing.api.RevisionProjectionPlan;
 import com.configly.event.processing.internal.RevisionApplierResult;
 import com.configly.model.Revision;
 import com.configly.model.featuretoggle.FeatureToggleId;
-import com.configly.web.correlation.CorrelationId;
+import com.configly.web.model.correlation.CorrelationId;
 import com.configly.read.application.port.in.FeatureToggleProjection;
 import com.configly.read.application.port.out.FeatureToggleProjectionRepository;
 import com.configly.read.application.port.out.FeatureToggleQueryRepository;
