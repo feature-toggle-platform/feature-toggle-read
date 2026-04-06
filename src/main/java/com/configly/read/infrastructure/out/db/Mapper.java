@@ -1,10 +1,10 @@
 package com.configly.read.infrastructure.out.db;
 
+import com.configly.jooq.tables.records.EnvironmentViewRecord;
+import com.configly.jooq.tables.records.FeatureToggleViewRecord;
+import com.configly.jooq.tables.records.ProjectViewRecord;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import pl.feature.ftaas.jooq.tables.records.EnvironmentViewRecord;
-import pl.feature.ftaas.jooq.tables.records.FeatureToggleViewRecord;
-import pl.feature.ftaas.jooq.tables.records.ProjectViewRecord;
 import com.configly.model.CreatedAt;
 import com.configly.model.Revision;
 import com.configly.model.UpdatedAt;
@@ -34,9 +34,10 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static pl.feature.ftaas.jooq.Tables.ENVIRONMENT_VIEW;
-import static pl.feature.ftaas.jooq.Tables.PROJECT_VIEW;
-import static pl.feature.ftaas.jooq.tables.FeatureToggleView.FEATURE_TOGGLE_VIEW;
+import static com.configly.jooq.tables.EnvironmentView.ENVIRONMENT_VIEW;
+import static com.configly.jooq.tables.FeatureToggleView.FEATURE_TOGGLE_VIEW;
+import static com.configly.jooq.tables.ProjectView.PROJECT_VIEW;
+
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 class Mapper {

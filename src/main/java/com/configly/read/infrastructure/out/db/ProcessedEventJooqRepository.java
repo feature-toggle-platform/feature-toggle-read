@@ -1,11 +1,11 @@
 package com.configly.read.infrastructure.out.db;
 
-import lombok.AllArgsConstructor;
-import org.jooq.DSLContext;
 import com.configly.contracts.shared.EventId;
 import com.configly.event.processing.api.ProcessedEventRepository;
+import lombok.AllArgsConstructor;
+import org.jooq.DSLContext;
 
-import static pl.feature.ftaas.jooq.tables.ProcessedEvents.PROCESSED_EVENTS;
+import static com.configly.jooq.tables.ProcessedEvents.PROCESSED_EVENTS;
 
 
 @AllArgsConstructor

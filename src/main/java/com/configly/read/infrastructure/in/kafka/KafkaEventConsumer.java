@@ -24,7 +24,7 @@ import com.configly.read.application.port.in.ProjectProjection;
 
 @Slf4j
 @AllArgsConstructor
-@KafkaListener(topics = {"${topics.feature-toggle-events}", "${topics.feature-toggle-configuration-events}"})
+@KafkaListener(topics = {"${topics.configly-toggle-events}", "${topics.configly-structure-events}"})
 class KafkaEventConsumer {
 
     private final FeatureToggleProjection featureToggleProjection;

@@ -1,5 +1,6 @@
 package com.configly.read;
 
+import com.configly.jooq.tables.records.ProcessedEventsRecord;
 import org.jooq.DSLContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.TestInstance;
@@ -9,16 +10,15 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import pl.feature.ftaas.jooq.tables.records.ProcessedEventsRecord;
 import com.configly.model.environment.EnvironmentId;
 import com.configly.model.project.ProjectId;
 
 import java.util.List;
 
-import static pl.feature.ftaas.jooq.tables.EnvironmentView.ENVIRONMENT_VIEW;
-import static pl.feature.ftaas.jooq.tables.FeatureToggleView.FEATURE_TOGGLE_VIEW;
-import static pl.feature.ftaas.jooq.tables.ProcessedEvents.PROCESSED_EVENTS;
-import static pl.feature.ftaas.jooq.tables.ProjectView.PROJECT_VIEW;
+import static com.configly.jooq.tables.EnvironmentView.ENVIRONMENT_VIEW;
+import static com.configly.jooq.tables.FeatureToggleView.FEATURE_TOGGLE_VIEW;
+import static com.configly.jooq.tables.ProcessedEvents.PROCESSED_EVENTS;
+import static com.configly.jooq.tables.ProjectView.PROJECT_VIEW;
 
 
 @Testcontainers

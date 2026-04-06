@@ -1,15 +1,15 @@
 package com.configly.read.infrastructure.out.db;
 
-import lombok.AllArgsConstructor;
-import org.jooq.DSLContext;
 import com.configly.model.project.ProjectId;
 import com.configly.read.application.port.out.ProjectQueryRepository;
 import com.configly.read.domain.ProjectView;
+import lombok.AllArgsConstructor;
+import org.jooq.DSLContext;
 
 import java.util.List;
 import java.util.Optional;
 
-import static pl.feature.ftaas.jooq.tables.ProjectView.PROJECT_VIEW;
+import static com.configly.jooq.tables.ProjectView.PROJECT_VIEW;
 
 @AllArgsConstructor
 class ProjectQueryJooqRepository implements ProjectQueryRepository {

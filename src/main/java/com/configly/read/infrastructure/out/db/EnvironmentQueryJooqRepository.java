@@ -10,7 +10,8 @@ import com.configly.read.domain.EnvironmentView;
 import java.util.List;
 import java.util.Optional;
 
-import static pl.feature.ftaas.jooq.tables.EnvironmentView.ENVIRONMENT_VIEW;
+import static com.configly.jooq.tables.EnvironmentView.ENVIRONMENT_VIEW;
+
 
 @AllArgsConstructor
 class EnvironmentQueryJooqRepository implements EnvironmentQueryRepository {

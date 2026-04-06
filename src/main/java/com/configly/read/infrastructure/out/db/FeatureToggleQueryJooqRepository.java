@@ -13,9 +13,10 @@ import com.configly.read.domain.FeatureToggleView;
 import java.util.List;
 import java.util.Optional;
 
-import static pl.feature.ftaas.jooq.Tables.ENVIRONMENT_VIEW;
-import static pl.feature.ftaas.jooq.Tables.PROJECT_VIEW;
-import static pl.feature.ftaas.jooq.tables.FeatureToggleView.FEATURE_TOGGLE_VIEW;
+import static com.configly.jooq.tables.EnvironmentView.ENVIRONMENT_VIEW;
+import static com.configly.jooq.tables.FeatureToggleView.FEATURE_TOGGLE_VIEW;
+import static com.configly.jooq.tables.ProjectView.PROJECT_VIEW;
+
 
 @AllArgsConstructor
 class FeatureToggleQueryJooqRepository implements FeatureToggleQueryRepository {

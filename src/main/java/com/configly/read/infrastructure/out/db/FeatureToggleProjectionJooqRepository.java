@@ -6,7 +6,8 @@ import com.configly.model.featuretoggle.FeatureToggleId;
 import com.configly.read.application.port.out.FeatureToggleProjectionRepository;
 import com.configly.read.domain.FeatureToggleView;
 
-import static pl.feature.ftaas.jooq.tables.FeatureToggleView.FEATURE_TOGGLE_VIEW;
+import static com.configly.jooq.tables.FeatureToggleView.FEATURE_TOGGLE_VIEW;
+
 
 @AllArgsConstructor
 class FeatureToggleProjectionJooqRepository implements FeatureToggleProjectionRepository {

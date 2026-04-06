@@ -1,10 +1,10 @@
 spring:
   application:
-    name: feature-toggle-read
+    name: configly-read
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
   datasource:
-    url: jdbc:postgresql://localhost:5434/feature_toggle_read
+    url: jdbc:postgresql://localhost:5434/configly_read
     username: admin
     password: admin
     driver-class-name: org.postgresql.Driver
@@ -15,15 +15,15 @@ spring:
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
-      group-id: feature-toggle-read
+      group-id: configly-read
 
 logging:
   pattern:
     console: "%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr([${spring.application.name:-app}]){green} %clr([%X{correlationId:--}]){yellow} %clr([%X{actor:--}]){cyan} %clr(%-5level) -> %msg%n"
 
 topics:
-  feature-toggle-events: feature-toggle-events
-  feature-toggle-configuration-events: feature-toggle-configuration-events
+  configly-toggle-events: configly-toggle-events
+  configly-structure-events: configly-structure-events
 
 server:
   port: 8083
